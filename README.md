@@ -269,6 +269,4 @@ The platform is deployed as a pure static site on Vercel. The Python pipeline ru
 
 <div align="center">
 
-Made with care by **Athelesh Balachandran · Barath Krishna R · Kamaleshwar K K** — 2025
-
 </div>
