@@ -1,0 +1,970 @@
+{
+  "balanced": [
+    {
+      "model_name": "GPT-5 mini",
+      "rank": 1,
+      "composite_score": 0.859636,
+      "profile": "balanced"
+    },
+    {
+      "model_name": "Gemini 2.0 Flash",
+      "rank": 2,
+      "composite_score": 0.805865,
+      "profile": "balanced"
+    },
+    {
+      "model_name": "GPT-5",
+      "rank": 3,
+      "composite_score": 0.751782,
+      "profile": "balanced"
+    },
+    {
+      "model_name": "Gemini 3 Pro",
+      "rank": 4,
+      "composite_score": 0.746693,
+      "profile": "balanced"
+    },
+    {
+      "model_name": "GPT-4o",
+      "rank": 5,
+      "composite_score": 0.745139,
+      "profile": "balanced"
+    },
+    {
+      "model_name": "Claude Sonnet 4",
+      "rank": 6,
+      "composite_score": 0.73954,
+      "profile": "balanced"
+    },
+    {
+      "model_name": "GPT-4o mini",
+      "rank": 7,
+      "composite_score": 0.736706,
+      "profile": "balanced"
+    },
+    {
+      "model_name": "Gemini 2.5 Flash",
+      "rank": 8,
+      "composite_score": 0.724747,
+      "profile": "balanced"
+    },
+    {
+      "model_name": "Claude Haiku 4",
+      "rank": 9,
+      "composite_score": 0.712932,
+      "profile": "balanced"
+    },
+    {
+      "model_name": "DeepSeek-V3.2",
+      "rank": 10,
+      "composite_score": 0.707194,
+      "profile": "balanced"
+    },
+    {
+      "model_name": "Grok 4",
+      "rank": 11,
+      "composite_score": 0.704487,
+      "profile": "balanced"
+    },
+    {
+      "model_name": "Gemini 2.5 Pro",
+      "rank": 12,
+      "composite_score": 0.701429,
+      "profile": "balanced"
+    },
+    {
+      "model_name": "DeepSeek-R1",
+      "rank": 13,
+      "composite_score": 0.693034,
+      "profile": "balanced"
+    },
+    {
+      "model_name": "Claude 3.5 Sonnet",
+      "rank": 14,
+      "composite_score": 0.692039,
+      "profile": "balanced"
+    },
+    {
+      "model_name": "Qwen3 235B",
+      "rank": 15,
+      "composite_score": 0.685482,
+      "profile": "balanced"
+    },
+    {
+      "model_name": "Qwen2.5 72B",
+      "rank": 16,
+      "composite_score": 0.678461,
+      "profile": "balanced"
+    },
+    {
+      "model_name": "Claude 3.5 Haiku",
+      "rank": 17,
+      "composite_score": 0.678225,
+      "profile": "balanced"
+    },
+    {
+      "model_name": "Grok 3",
+      "rank": 18,
+      "composite_score": 0.677612,
+      "profile": "balanced"
+    },
+    {
+      "model_name": "DeepSeek-V3",
+      "rank": 19,
+      "composite_score": 0.675153,
+      "profile": "balanced"
+    },
+    {
+      "model_name": "Mistral Large 3",
+      "rank": 20,
+      "composite_score": 0.670473,
+      "profile": "balanced"
+    },
+    {
+      "model_name": "Llama 4 Maverick",
+      "rank": 21,
+      "composite_score": 0.665483,
+      "profile": "balanced"
+    },
+    {
+      "model_name": "Claude Opus 4",
+      "rank": 22,
+      "composite_score": 0.655936,
+      "profile": "balanced"
+    },
+    {
+      "model_name": "Mistral Large 2",
+      "rank": 23,
+      "composite_score": 0.652435,
+      "profile": "balanced"
+    },
+    {
+      "model_name": "Llama 4 Scout",
+      "rank": 24,
+      "composite_score": 0.642054,
+      "profile": "balanced"
+    },
+    {
+      "model_name": "Llama 3.1 405B",
+      "rank": 25,
+      "composite_score": 0.633069,
+      "profile": "balanced"
+    },
+    {
+      "model_name": "Gemini 1.5 Flash",
+      "rank": 26,
+      "composite_score": 0.587814,
+      "profile": "balanced"
+    },
+    {
+      "model_name": "GPT-4 Turbo",
+      "rank": 27,
+      "composite_score": 0.585261,
+      "profile": "balanced"
+    },
+    {
+      "model_name": "Llama 3.1 70B",
+      "rank": 28,
+      "composite_score": 0.582622,
+      "profile": "balanced"
+    },
+    {
+      "model_name": "Qwen2.5 7B",
+      "rank": 29,
+      "composite_score": 0.561165,
+      "profile": "balanced"
+    },
+    {
+      "model_name": "Gemini 1.5 Pro",
+      "rank": 30,
+      "composite_score": 0.558327,
+      "profile": "balanced"
+    },
+    {
+      "model_name": "Claude 3 Haiku",
+      "rank": 31,
+      "composite_score": 0.556297,
+      "profile": "balanced"
+    },
+    {
+      "model_name": "Llama 3.1 8B",
+      "rank": 32,
+      "composite_score": 0.544143,
+      "profile": "balanced"
+    },
+    {
+      "model_name": "Phi-3 Medium",
+      "rank": 33,
+      "composite_score": 0.528384,
+      "profile": "balanced"
+    },
+    {
+      "model_name": "GPT-3.5 Turbo",
+      "rank": 34,
+      "composite_score": 0.503438,
+      "profile": "balanced"
+    },
+    {
+      "model_name": "Llama 3.2 3B",
+      "rank": 35,
+      "composite_score": 0.464326,
+      "profile": "balanced"
+    },
+    {
+      "model_name": "Claude 3 Opus",
+      "rank": 36,
+      "composite_score": 0.458123,
+      "profile": "balanced"
+    },
+    {
+      "model_name": "Phi-3 Mini",
+      "rank": 37,
+      "composite_score": 0.432143,
+      "profile": "balanced"
+    },
+    {
+      "model_name": "Command R+",
+      "rank": 38,
+      "composite_score": 0.403303,
+      "profile": "balanced"
+    },
+    {
+      "model_name": "Mixtral 8x7B",
+      "rank": 39,
+      "composite_score": 0.384413,
+      "profile": "balanced"
+    },
+    {
+      "model_name": "Mistral 7B",
+      "rank": 40,
+      "composite_score": 0.335686,
+      "profile": "balanced"
+    }
+  ],
+  "research_focused": [
+    {
+      "model_name": "GPT-5 mini",
+      "rank": 1,
+      "composite_score": 0.822583,
+      "profile": "research_focused"
+    },
+    {
+      "model_name": "Gemini 3 Pro",
+      "rank": 2,
+      "composite_score": 0.81585,
+      "profile": "research_focused"
+    },
+    {
+      "model_name": "GPT-5",
+      "rank": 3,
+      "composite_score": 0.808785,
+      "profile": "research_focused"
+    },
+    {
+      "model_name": "Gemini 2.0 Flash",
+      "rank": 4,
+      "composite_score": 0.789336,
+      "profile": "research_focused"
+    },
+    {
+      "model_name": "GPT-4o",
+      "rank": 5,
+      "composite_score": 0.786816,
+      "profile": "research_focused"
+    },
+    {
+      "model_name": "Claude Sonnet 4",
+      "rank": 6,
+      "composite_score": 0.78059,
+      "profile": "research_focused"
+    },
+    {
+      "model_name": "Grok 4",
+      "rank": 7,
+      "composite_score": 0.761448,
+      "profile": "research_focused"
+    },
+    {
+      "model_name": "Gemini 2.5 Pro",
+      "rank": 8,
+      "composite_score": 0.744394,
+      "profile": "research_focused"
+    },
+    {
+      "model_name": "Claude Opus 4",
+      "rank": 9,
+      "composite_score": 0.739968,
+      "profile": "research_focused"
+    },
+    {
+      "model_name": "DeepSeek-V3.2",
+      "rank": 10,
+      "composite_score": 0.735018,
+      "profile": "research_focused"
+    },
+    {
+      "model_name": "DeepSeek-R1",
+      "rank": 11,
+      "composite_score": 0.731996,
+      "profile": "research_focused"
+    },
+    {
+      "model_name": "Claude 3.5 Sonnet",
+      "rank": 12,
+      "composite_score": 0.721792,
+      "profile": "research_focused"
+    },
+    {
+      "model_name": "Grok 3",
+      "rank": 13,
+      "composite_score": 0.71622,
+      "profile": "research_focused"
+    },
+    {
+      "model_name": "GPT-4o mini",
+      "rank": 14,
+      "composite_score": 0.711927,
+      "profile": "research_focused"
+    },
+    {
+      "model_name": "Qwen3 235B",
+      "rank": 15,
+      "composite_score": 0.710868,
+      "profile": "research_focused"
+    },
+    {
+      "model_name": "Gemini 2.5 Flash",
+      "rank": 16,
+      "composite_score": 0.709329,
+      "profile": "research_focused"
+    },
+    {
+      "model_name": "Mistral Large 3",
+      "rank": 17,
+      "composite_score": 0.697061,
+      "profile": "research_focused"
+    },
+    {
+      "model_name": "Claude Haiku 4",
+      "rank": 18,
+      "composite_score": 0.696178,
+      "profile": "research_focused"
+    },
+    {
+      "model_name": "DeepSeek-V3",
+      "rank": 19,
+      "composite_score": 0.695006,
+      "profile": "research_focused"
+    },
+    {
+      "model_name": "Llama 4 Maverick",
+      "rank": 20,
+      "composite_score": 0.690661,
+      "profile": "research_focused"
+    },
+    {
+      "model_name": "Qwen2.5 72B",
+      "rank": 21,
+      "composite_score": 0.680554,
+      "profile": "research_focused"
+    },
+    {
+      "model_name": "Llama 3.1 405B",
+      "rank": 22,
+      "composite_score": 0.678565,
+      "profile": "research_focused"
+    },
+    {
+      "model_name": "Mistral Large 2",
+      "rank": 23,
+      "composite_score": 0.672291,
+      "profile": "research_focused"
+    },
+    {
+      "model_name": "GPT-4 Turbo",
+      "rank": 24,
+      "composite_score": 0.663993,
+      "profile": "research_focused"
+    },
+    {
+      "model_name": "Claude 3.5 Haiku",
+      "rank": 25,
+      "composite_score": 0.65398,
+      "profile": "research_focused"
+    },
+    {
+      "model_name": "Llama 4 Scout",
+      "rank": 26,
+      "composite_score": 0.648555,
+      "profile": "research_focused"
+    },
+    {
+      "model_name": "Gemini 1.5 Pro",
+      "rank": 27,
+      "composite_score": 0.595417,
+      "profile": "research_focused"
+    },
+    {
+      "model_name": "Llama 3.1 70B",
+      "rank": 28,
+      "composite_score": 0.589167,
+      "profile": "research_focused"
+    },
+    {
+      "model_name": "Claude 3 Opus",
+      "rank": 29,
+      "composite_score": 0.582355,
+      "profile": "research_focused"
+    },
+    {
+      "model_name": "Gemini 1.5 Flash",
+      "rank": 30,
+      "composite_score": 0.555568,
+      "profile": "research_focused"
+    },
+    {
+      "model_name": "Claude 3 Haiku",
+      "rank": 31,
+      "composite_score": 0.503984,
+      "profile": "research_focused"
+    },
+    {
+      "model_name": "Qwen2.5 7B",
+      "rank": 32,
+      "composite_score": 0.497313,
+      "profile": "research_focused"
+    },
+    {
+      "model_name": "Phi-3 Medium",
+      "rank": 33,
+      "composite_score": 0.48787,
+      "profile": "research_focused"
+    },
+    {
+      "model_name": "Llama 3.1 8B",
+      "rank": 34,
+      "composite_score": 0.482714,
+      "profile": "research_focused"
+    },
+    {
+      "model_name": "GPT-3.5 Turbo",
+      "rank": 35,
+      "composite_score": 0.460985,
+      "profile": "research_focused"
+    },
+    {
+      "model_name": "Command R+",
+      "rank": 36,
+      "composite_score": 0.383065,
+      "profile": "research_focused"
+    },
+    {
+      "model_name": "Llama 3.2 3B",
+      "rank": 37,
+      "composite_score": 0.336578,
+      "profile": "research_focused"
+    },
+    {
+      "model_name": "Phi-3 Mini",
+      "rank": 38,
+      "composite_score": 0.326762,
+      "profile": "research_focused"
+    },
+    {
+      "model_name": "Mixtral 8x7B",
+      "rank": 39,
+      "composite_score": 0.302626,
+      "profile": "research_focused"
+    },
+    {
+      "model_name": "Mistral 7B",
+      "rank": 40,
+      "composite_score": 0.226193,
+      "profile": "research_focused"
+    }
+  ],
+  "production_focused": [
+    {
+      "model_name": "GPT-5 mini",
+      "rank": 1,
+      "composite_score": 0.894139,
+      "profile": "production_focused"
+    },
+    {
+      "model_name": "Gemini 2.0 Flash",
+      "rank": 2,
+      "composite_score": 0.818686,
+      "profile": "production_focused"
+    },
+    {
+      "model_name": "GPT-4o mini",
+      "rank": 3,
+      "composite_score": 0.7585,
+      "profile": "production_focused"
+    },
+    {
+      "model_name": "Gemini 2.5 Flash",
+      "rank": 4,
+      "composite_score": 0.729641,
+      "profile": "production_focused"
+    },
+    {
+      "model_name": "Claude Haiku 4",
+      "rank": 5,
+      "composite_score": 0.721438,
+      "profile": "production_focused"
+    },
+    {
+      "model_name": "GPT-4o",
+      "rank": 6,
+      "composite_score": 0.719807,
+      "profile": "production_focused"
+    },
+    {
+      "model_name": "Claude Sonnet 4",
+      "rank": 7,
+      "composite_score": 0.717637,
+      "profile": "production_focused"
+    },
+    {
+      "model_name": "GPT-5",
+      "rank": 8,
+      "composite_score": 0.715582,
+      "profile": "production_focused"
+    },
+    {
+      "model_name": "Gemini 3 Pro",
+      "rank": 9,
+      "composite_score": 0.710879,
+      "profile": "production_focused"
+    },
+    {
+      "model_name": "DeepSeek-V3.2",
+      "rank": 10,
+      "composite_score": 0.701358,
+      "profile": "production_focused"
+    },
+    {
+      "model_name": "Qwen2.5 72B",
+      "rank": 11,
+      "composite_score": 0.697358,
+      "profile": "production_focused"
+    },
+    {
+      "model_name": "Claude 3.5 Haiku",
+      "rank": 12,
+      "composite_score": 0.694141,
+      "profile": "production_focused"
+    },
+    {
+      "model_name": "Qwen3 235B",
+      "rank": 13,
+      "composite_score": 0.687601,
+      "profile": "production_focused"
+    },
+    {
+      "model_name": "Gemini 2.5 Pro",
+      "rank": 14,
+      "composite_score": 0.684653,
+      "profile": "production_focused"
+    },
+    {
+      "model_name": "DeepSeek-R1",
+      "rank": 15,
+      "composite_score": 0.684181,
+      "profile": "production_focused"
+    },
+    {
+      "model_name": "Claude 3.5 Sonnet",
+      "rank": 16,
+      "composite_score": 0.678724,
+      "profile": "production_focused"
+    },
+    {
+      "model_name": "DeepSeek-V3",
+      "rank": 17,
+      "composite_score": 0.675664,
+      "profile": "production_focused"
+    },
+    {
+      "model_name": "Grok 4",
+      "rank": 18,
+      "composite_score": 0.674008,
+      "profile": "production_focused"
+    },
+    {
+      "model_name": "Mistral Large 3",
+      "rank": 19,
+      "composite_score": 0.668647,
+      "profile": "production_focused"
+    },
+    {
+      "model_name": "Llama 4 Maverick",
+      "rank": 20,
+      "composite_score": 0.666969,
+      "profile": "production_focused"
+    },
+    {
+      "model_name": "Grok 3",
+      "rank": 21,
+      "composite_score": 0.659347,
+      "profile": "production_focused"
+    },
+    {
+      "model_name": "Mistral Large 2",
+      "rank": 22,
+      "composite_score": 0.65768,
+      "profile": "production_focused"
+    },
+    {
+      "model_name": "Llama 4 Scout",
+      "rank": 23,
+      "composite_score": 0.644286,
+      "profile": "production_focused"
+    },
+    {
+      "model_name": "Llama 3.1 405B",
+      "rank": 24,
+      "composite_score": 0.629754,
+      "profile": "production_focused"
+    },
+    {
+      "model_name": "Gemini 1.5 Flash",
+      "rank": 25,
+      "composite_score": 0.614358,
+      "profile": "production_focused"
+    },
+    {
+      "model_name": "Qwen2.5 7B",
+      "rank": 26,
+      "composite_score": 0.612468,
+      "profile": "production_focused"
+    },
+    {
+      "model_name": "Claude Opus 4",
+      "rank": 27,
+      "composite_score": 0.608836,
+      "profile": "production_focused"
+    },
+    {
+      "model_name": "Claude 3 Haiku",
+      "rank": 28,
+      "composite_score": 0.598105,
+      "profile": "production_focused"
+    },
+    {
+      "model_name": "Llama 3.1 8B",
+      "rank": 29,
+      "composite_score": 0.595219,
+      "profile": "production_focused"
+    },
+    {
+      "model_name": "Llama 3.1 70B",
+      "rank": 30,
+      "composite_score": 0.592658,
+      "profile": "production_focused"
+    },
+    {
+      "model_name": "Phi-3 Medium",
+      "rank": 31,
+      "composite_score": 0.569968,
+      "profile": "production_focused"
+    },
+    {
+      "model_name": "Llama 3.2 3B",
+      "rank": 32,
+      "composite_score": 0.54835,
+      "profile": "production_focused"
+    },
+    {
+      "model_name": "GPT-3.5 Turbo",
+      "rank": 33,
+      "composite_score": 0.546111,
+      "profile": "production_focused"
+    },
+    {
+      "model_name": "Gemini 1.5 Pro",
+      "rank": 34,
+      "composite_score": 0.542544,
+      "profile": "production_focused"
+    },
+    {
+      "model_name": "GPT-4 Turbo",
+      "rank": 35,
+      "composite_score": 0.533558,
+      "profile": "production_focused"
+    },
+    {
+      "model_name": "Phi-3 Mini",
+      "rank": 36,
+      "composite_score": 0.511072,
+      "profile": "production_focused"
+    },
+    {
+      "model_name": "Mixtral 8x7B",
+      "rank": 37,
+      "composite_score": 0.453115,
+      "profile": "production_focused"
+    },
+    {
+      "model_name": "Command R+",
+      "rank": 38,
+      "composite_score": 0.428313,
+      "profile": "production_focused"
+    },
+    {
+      "model_name": "Mistral 7B",
+      "rank": 39,
+      "composite_score": 0.422446,
+      "profile": "production_focused"
+    },
+    {
+      "model_name": "Claude 3 Opus",
+      "rank": 40,
+      "composite_score": 0.366018,
+      "profile": "production_focused"
+    }
+  ],
+  "cost_sensitive": [
+    {
+      "model_name": "GPT-5 mini",
+      "rank": 1,
+      "composite_score": 0.912847,
+      "profile": "cost_sensitive"
+    },
+    {
+      "model_name": "Gemini 2.0 Flash",
+      "rank": 2,
+      "composite_score": 0.856086,
+      "profile": "cost_sensitive"
+    },
+    {
+      "model_name": "GPT-4o mini",
+      "rank": 3,
+      "composite_score": 0.808351,
+      "profile": "cost_sensitive"
+    },
+    {
+      "model_name": "Gemini 2.5 Flash",
+      "rank": 4,
+      "composite_score": 0.784416,
+      "profile": "cost_sensitive"
+    },
+    {
+      "model_name": "Claude Haiku 4",
+      "rank": 5,
+      "composite_score": 0.765376,
+      "profile": "cost_sensitive"
+    },
+    {
+      "model_name": "DeepSeek-V3.2",
+      "rank": 6,
+      "composite_score": 0.764149,
+      "profile": "cost_sensitive"
+    },
+    {
+      "model_name": "Qwen2.5 72B",
+      "rank": 7,
+      "composite_score": 0.761847,
+      "profile": "cost_sensitive"
+    },
+    {
+      "model_name": "Qwen3 235B",
+      "rank": 8,
+      "composite_score": 0.754509,
+      "profile": "cost_sensitive"
+    },
+    {
+      "model_name": "DeepSeek-R1",
+      "rank": 9,
+      "composite_score": 0.751778,
+      "profile": "cost_sensitive"
+    },
+    {
+      "model_name": "Claude 3.5 Haiku",
+      "rank": 10,
+      "composite_score": 0.74685,
+      "profile": "cost_sensitive"
+    },
+    {
+      "model_name": "DeepSeek-V3",
+      "rank": 11,
+      "composite_score": 0.743802,
+      "profile": "cost_sensitive"
+    },
+    {
+      "model_name": "Gemini 3 Pro",
+      "rank": 12,
+      "composite_score": 0.743506,
+      "profile": "cost_sensitive"
+    },
+    {
+      "model_name": "GPT-5",
+      "rank": 13,
+      "composite_score": 0.741055,
+      "profile": "cost_sensitive"
+    },
+    {
+      "model_name": "Llama 4 Maverick",
+      "rank": 14,
+      "composite_score": 0.738009,
+      "profile": "cost_sensitive"
+    },
+    {
+      "model_name": "Claude Sonnet 4",
+      "rank": 15,
+      "composite_score": 0.737772,
+      "profile": "cost_sensitive"
+    },
+    {
+      "model_name": "GPT-4o",
+      "rank": 16,
+      "composite_score": 0.734231,
+      "profile": "cost_sensitive"
+    },
+    {
+      "model_name": "Gemini 2.5 Pro",
+      "rank": 17,
+      "composite_score": 0.728737,
+      "profile": "cost_sensitive"
+    },
+    {
+      "model_name": "Mistral Large 3",
+      "rank": 18,
+      "composite_score": 0.724005,
+      "profile": "cost_sensitive"
+    },
+    {
+      "model_name": "Llama 4 Scout",
+      "rank": 19,
+      "composite_score": 0.717094,
+      "profile": "cost_sensitive"
+    },
+    {
+      "model_name": "Mistral Large 2",
+      "rank": 20,
+      "composite_score": 0.715674,
+      "profile": "cost_sensitive"
+    },
+    {
+      "model_name": "Llama 3.1 405B",
+      "rank": 21,
+      "composite_score": 0.710933,
+      "profile": "cost_sensitive"
+    },
+    {
+      "model_name": "Claude 3.5 Sonnet",
+      "rank": 22,
+      "composite_score": 0.706872,
+      "profile": "cost_sensitive"
+    },
+    {
+      "model_name": "Grok 4",
+      "rank": 23,
+      "composite_score": 0.704097,
+      "profile": "cost_sensitive"
+    },
+    {
+      "model_name": "Gemini 1.5 Flash",
+      "rank": 24,
+      "composite_score": 0.694856,
+      "profile": "cost_sensitive"
+    },
+    {
+      "model_name": "Grok 3",
+      "rank": 25,
+      "composite_score": 0.691977,
+      "profile": "cost_sensitive"
+    },
+    {
+      "model_name": "Qwen2.5 7B",
+      "rank": 26,
+      "composite_score": 0.690403,
+      "profile": "cost_sensitive"
+    },
+    {
+      "model_name": "Claude 3 Haiku",
+      "rank": 27,
+      "composite_score": 0.679209,
+      "profile": "cost_sensitive"
+    },
+    {
+      "model_name": "Llama 3.1 70B",
+      "rank": 28,
+      "composite_score": 0.677855,
+      "profile": "cost_sensitive"
+    },
+    {
+      "model_name": "Llama 3.1 8B",
+      "rank": 29,
+      "composite_score": 0.677104,
+      "profile": "cost_sensitive"
+    },
+    {
+      "model_name": "Phi-3 Medium",
+      "rank": 30,
+      "composite_score": 0.658621,
+      "profile": "cost_sensitive"
+    },
+    {
+      "model_name": "GPT-3.5 Turbo",
+      "rank": 31,
+      "composite_score": 0.638709,
+      "profile": "cost_sensitive"
+    },
+    {
+      "model_name": "Llama 3.2 3B",
+      "rank": 32,
+      "composite_score": 0.635809,
+      "profile": "cost_sensitive"
+    },
+    {
+      "model_name": "Claude Opus 4",
+      "rank": 33,
+      "composite_score": 0.625658,
+      "profile": "cost_sensitive"
+    },
+    {
+      "model_name": "Gemini 1.5 Pro",
+      "rank": 34,
+      "composite_score": 0.60907,
+      "profile": "cost_sensitive"
+    },
+    {
+      "model_name": "Phi-3 Mini",
+      "rank": 35,
+      "composite_score": 0.608965,
+      "profile": "cost_sensitive"
+    },
+    {
+      "model_name": "Mixtral 8x7B",
+      "rank": 36,
+      "composite_score": 0.564884,
+      "profile": "cost_sensitive"
+    },
+    {
+      "model_name": "GPT-4 Turbo",
+      "rank": 37,
+      "composite_score": 0.540976,
+      "profile": "cost_sensitive"
+    },
+    {
+      "model_name": "Mistral 7B",
+      "rank": 38,
+      "composite_score": 0.539749,
+      "profile": "cost_sensitive"
+    },
+    {
+      "model_name": "Command R+",
+      "rank": 39,
+      "composite_score": 0.508282,
+      "profile": "cost_sensitive"
+    },
+    {
+      "model_name": "Claude 3 Opus",
+      "rank": 40,
+      "composite_score": 0.291281,
+      "profile": "cost_sensitive"
+    }
+  ]
+}

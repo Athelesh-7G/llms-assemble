@@ -1,0 +1,41 @@
+model_name,organization,architecture,parameter_size_b,context_window_k,mmlu_score,humaneval_score,math_score,hellaswag_score,arc_score,tokens_per_second,latency_ms,cost_input_per_1m,cost_output_per_1m,is_open_source,data_quality,release_month
+GPT-4o,OpenAI,Transformer-MoE,200.0,128,88.7,90.2,76.6,95.3,96.3,109.0,320.0,5.0,15.0,False,measured,2024-05
+GPT-4o mini,OpenAI,Transformer,8.0,128,82.0,87.2,70.2,89.1,88.3,180.0,180.0,0.15,0.6,False,measured,2024-07
+GPT-4 Turbo,OpenAI,Transformer,1800.0,128,86.4,87.1,72.2,95.4,96.4,42.0,780.0,10.0,30.0,False,measured,2024-04
+GPT-3.5 Turbo,OpenAI,Transformer,20.0,16,70.0,73.5,57.1,85.5,85.2,67.0,450.0,0.5,1.5,False,measured,2023-03
+Claude 3.5 Sonnet,Anthropic,Transformer,175.0,200,88.3,92.0,71.1,89.1,93.2,79.0,380.0,3.0,15.0,False,measured,2024-06
+Claude 3.5 Haiku,Anthropic,Transformer,20.0,200,77.9,88.2,69.2,86.0,88.5,200.0,150.0,0.8,4.0,False,measured,2025-01
+Claude 3 Opus,Anthropic,Transformer,175.0,200,86.8,84.9,60.1,95.4,96.4,20.0,1200.0,15.0,75.0,False,measured,2024-03
+Claude 3 Haiku,Anthropic,Transformer,20.0,200,75.2,75.9,38.9,85.9,87.4,142.0,210.0,0.25,1.25,False,measured,2024-03
+Gemini 1.5 Pro,Google,Transformer-MoE,340.0,1000,85.9,84.1,67.7,92.5,88.0,50.0,850.0,3.5,10.5,False,measured,2024-05
+Gemini 1.5 Flash,Google,Transformer-MoE,80.0,1000,78.9,74.3,54.9,89.2,86.5,150.0,290.0,0.075,0.3,False,measured,2024-05
+Gemini 2.0 Flash,Google,Transformer-MoE,100.0,1000,85.0,90.5,75.6,91.0,90.2,220.0,140.0,0.1,0.4,False,measured,2025-02
+Llama 3.1 405B,Meta,Transformer,405.0,128,88.6,89.0,73.8,92.8,94.5,15.0,1800.0,0.0,0.0,True,measured,2024-07
+Llama 3.1 70B,Meta,Transformer,70.0,128,83.6,80.5,65.7,87.3,91.1,45.0,650.0,0.0,0.0,True,measured,2024-07
+Llama 3.1 8B,Meta,Transformer,8.0,128,73.0,72.6,51.9,82.0,84.2,130.0,280.0,0.0,0.0,True,measured,2024-07
+Llama 3.2 3B,Meta,Transformer,3.0,128,63.4,58.0,41.6,75.3,76.1,280.0,110.0,0.0,0.0,True,measured,2024-09
+Mistral Large 2,Mistral,Transformer,123.0,128,84.0,92.0,68.0,89.2,93.0,38.0,920.0,2.0,6.0,False,measured,2024-07
+Mistral 7B,Mistral,Transformer,7.0,32,64.2,40.7,28.4,81.3,79.9,95.0,310.0,0.0,0.0,True,measured,2023-09
+Mixtral 8x7B,Mistral,Transformer-MoE,46.0,32,70.6,40.2,28.4,86.7,85.9,80.0,420.0,0.0,0.0,True,measured,2023-12
+Qwen2.5 72B,Alibaba,Transformer,72.0,128,86.0,85.9,73.2,86.7,91.0,40.0,700.0,0.0,0.0,True,measured,2024-09
+Qwen2.5 7B,Alibaba,Transformer,7.0,128,74.2,72.8,58.5,80.1,82.3,150.0,260.0,0.0,0.0,True,measured,2024-09
+DeepSeek-V3,DeepSeek,Transformer-MoE,671.0,128,88.5,89.3,75.4,88.9,90.5,60.0,600.0,0.14,0.28,True,measured,2024-12
+DeepSeek-R1,DeepSeek,Transformer-MoE,671.0,128,90.8,92.0,79.8,91.2,92.7,40.0,900.0,0.55,2.19,True,measured,2025-01
+Phi-3 Medium,Microsoft,Transformer,14.0,128,78.0,70.9,53.6,83.2,85.3,75.0,480.0,0.0,0.0,True,measured,2024-05
+Phi-3 Mini,Microsoft,Transformer,3.8,128,68.8,58.1,37.9,75.6,77.8,160.0,220.0,0.0,0.0,True,measured,2024-04
+Command R+,Cohere,Transformer,104.0,128,75.7,60.0,33.8,88.1,90.0,44.0,780.0,3.0,15.0,False,estimated,2024-04
+GPT-5,OpenAI,Transformer-MoE,1000.0,128,91.5,93.0,82.0,96.0,97.0,95.0,290.0,1.75,14.0,False,measured,2025-08
+GPT-5 mini,OpenAI,Transformer,15.0,128,84.0,88.0,74.0,90.0,91.0,200.0,160.0,0.25,2.0,False,measured,2025-08
+Claude Sonnet 4,Anthropic,Transformer,175.0,200,90.2,93.7,78.5,91.5,94.8,85.0,340.0,3.0,15.0,False,measured,2025-06
+Claude Opus 4,Anthropic,Transformer,500.0,200,91.8,95.0,81.2,93.0,96.5,30.0,1100.0,5.0,25.0,False,measured,2025-06
+Claude Haiku 4,Anthropic,Transformer,20.0,200,80.5,89.5,72.0,87.5,89.0,220.0,130.0,1.0,5.0,False,measured,2025-08
+Gemini 2.5 Pro,Google,Transformer-MoE,340.0,1000,89.5,90.0,83.0,93.5,92.0,60.0,750.0,1.25,10.0,False,measured,2025-03
+Gemini 2.5 Flash,Google,Transformer-MoE,80.0,1000,83.0,82.5,74.0,91.0,89.5,250.0,120.0,0.075,0.3,False,measured,2025-03
+Gemini 3 Pro,Google,Transformer-MoE,500.0,1000,93.0,94.5,88.0,95.5,97.5,55.0,800.0,2.0,12.0,False,estimated,2025-11
+Llama 4 Scout,Meta,Transformer-MoE,109.0,10000,85.5,81.0,72.5,89.5,90.0,110.0,400.0,0.0,0.0,True,measured,2025-04
+Llama 4 Maverick,Meta,Transformer-MoE,400.0,1000,88.0,85.5,76.0,91.0,92.5,40.0,900.0,0.0,0.0,True,measured,2025-04
+Grok 3,xAI,Transformer,300.0,128,87.5,88.0,79.0,91.5,93.0,70.0,550.0,3.0,15.0,False,estimated,2025-02
+Grok 4,xAI,Transformer-MoE,500.0,256,90.5,92.0,83.5,93.0,95.0,60.0,620.0,3.0,15.0,False,estimated,2025-07
+Qwen3 235B,Alibaba,Transformer-MoE,235.0,128,88.5,87.0,80.0,90.5,92.0,35.0,850.0,0.0,0.0,True,measured,2025-04
+DeepSeek-V3.2,DeepSeek,Transformer-MoE,671.0,128,90.0,91.5,79.0,90.0,92.0,65.0,560.0,0.14,0.28,True,measured,2025-09
+Mistral Large 3,Mistral,Transformer,200.0,128,86.0,90.0,73.0,90.5,93.5,45.0,800.0,2.0,6.0,False,estimated,2025-07

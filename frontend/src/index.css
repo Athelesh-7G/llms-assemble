@@ -1,0 +1,177 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Theme tokens ─────────────────────────────────────────────────────────── */
+
+:root,
+:root[data-theme="dark"] {
+  --bg-base:      #0F1117;
+  --bg-card:      #1E2029;
+  --bg-sidebar:   #0D0F15;
+  --border:       #2A2D3A;
+  --text-primary: #EAEAEA;
+  --text-muted:   #888888;
+  --text-faint:   #555555;
+  --accent-red:   #E63946;
+  --accent-blue:  #457B9D;
+  --accent-teal:  #2A9D8F;
+  --accent-gold:  #E9C46A;
+}
+
+:root[data-theme="light"] {
+  --bg-base:      #F0F2F8;
+  --bg-card:      #FFFFFF;
+  --bg-sidebar:   #E8EBF4;
+  --border:       #CBD0DC;
+  --text-primary: #0D0F1A;
+  --text-muted:   #4A5168;
+  --text-faint:   #7A8099;
+  --accent-red:   #C8102E;
+  --accent-blue:  #1D4ED8;
+  --accent-teal:  #0D7A70;
+  --accent-gold:  #B45309;
+}
+
+/* ── Base styles ──────────────────────────────────────────────────────────── */
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background-color: var(--bg-base);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+::selection {
+  background: rgba(230, 57, 70, 0.25);
+  color: var(--text-primary);
+}
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-base); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-faint); }
+
+input[type='range'] {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--border);
+  outline: none;
+  cursor: pointer;
+}
+
+input[type='range']::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--accent-red);
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+input[type='range']::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+
+input[type='range']::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--accent-red);
+  cursor: pointer;
+  border: none;
+}
+
+table { border-collapse: collapse; width: 100%; }
+.will-change-transform { will-change: transform; }
+
+/* ── Global input / select / textarea reset ───────────────────────────────── */
+
+input, select, textarea {
+  color: var(--text-primary);
+  background-color: var(--bg-card);
+}
+
+input::placeholder, textarea::placeholder {
+  color: var(--text-muted);
+  opacity: 1;
+}
+
+select option {
+  background-color: var(--bg-card);
+  color: var(--text-primary);
+}
+
+/* ── Z-index scale ────────────────────────────────────────────────────────── */
+
+.z-dropdown { z-index: 50; }
+.z-modal    { z-index: 100; }
+.z-toast    { z-index: 200; }
+.z-splash   { z-index: 9999; }
+
+/* ── Landing page utilities ───────────────────────────────────────────────── */
+
+.landing-scroll {
+  scroll-behavior: smooth;
+  overflow-y: auto;
+  height: 100vh;
+}
+
+.gradient-text-hero {
+  background: linear-gradient(135deg, #E63946 0%, #E9C46A 50%, #457B9D 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.btn-glow:hover {
+  box-shadow: 0 0 40px rgba(230, 57, 70, 0.5);
+}
+
+/* Custom cursor — active only on landing page */
+body.custom-cursor-active,
+body.custom-cursor-active *,
+body.custom-cursor-active a,
+body.custom-cursor-active button,
+body.custom-cursor-active [role="button"] {
+  cursor: none !important;
+}
+
+/* Mobile touch improvements */
+@media (max-width: 640px) {
+  body {
+    overflow-x: hidden;
+  }
+
+  button, a, [role="button"] {
+    min-height: 40px;
+  }
+
+  .overflow-x-auto,
+  .overflow-y-auto {
+    -webkit-overflow-scrolling: touch;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+}
+
+/* Hide custom cursor on touch devices */
+@media (hover: none) and (pointer: coarse) {
+  body.custom-cursor-active,
+  body.custom-cursor-active * {
+    cursor: auto !important;
+  }
+}
