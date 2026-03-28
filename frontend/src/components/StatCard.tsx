@@ -47,7 +47,7 @@ export default function StatCard({
       </div>
       <div className="text-2xl font-bold text-primary leading-tight">{displayValue}</div>
       <div className="text-sm text-muted mt-1">{label}</div>
-      {subtitle && <div className="text-xs text-faint mt-0.5">{subtitle}</div>}
+      {subtitle && <div className="text-xs text-primary mt-0.5">{subtitle}</div>}
     </motion.div>
   )
 }

@@ -172,10 +172,10 @@ export default function HomePage() {
         >
           LLMs Assemble
         </h1>
-        <p className="text-xl text-muted mt-2">
+        <p className="text-xl text-primary mt-2">
           Compare Every LLM. Choose the Best.
         </p>
-        <p className="text-sm text-faint mt-3 max-w-2xl">
+        <p className="text-sm text-primary mt-3 max-w-2xl">
           Benchmark · Compare · Calculate Costs · Find Your Model · 120 AI Stories
         </p>
       </section>
@@ -291,11 +291,11 @@ export default function HomePage() {
               <div className="font-bold text-sm" style={{ color: cluster.color }}>
                 {cluster.label}
               </div>
-              <div className="text-sm text-muted mt-1">{cluster.models.length} models</div>
+              <div className="text-sm text-primary mt-1">{cluster.models.length} models</div>
               <div className="text-sm text-primary mt-2">
                 Avg capability: {(cluster.avg_capability * 100).toFixed(1)}%
               </div>
-              <div className="text-xs text-faint mt-2">{cluster.use_case}</div>
+              <div className="text-xs text-primary mt-2">{cluster.use_case}</div>
             </motion.div>
           ))}
         </div>
@@ -316,7 +316,7 @@ export default function HomePage() {
                 <span style={{ color: ins.color }}>{ins.icon}</span>
                 <span className="text-sm font-semibold text-primary">{ins.title}</span>
               </div>
-              <p className="text-sm text-muted">{ins.text}</p>
+              <p className="text-sm text-primary">{ins.text}</p>
             </motion.div>
           ))}
         </div>
@@ -333,7 +333,7 @@ export default function HomePage() {
             </div>
             <div className="text-sm font-bold text-primary leading-tight">{bestCoding?.model_name ?? '—'}</div>
             <div className="mt-2"><ClusterBadge label={bestCoding?.cluster_label ?? ''} size="sm" /></div>
-            <div className="text-xs text-muted mt-2 font-mono">HumanEval {bestCoding?.humaneval_score.toFixed(1)}</div>
+            <div className="text-xs text-primary mt-2 font-mono">HumanEval {bestCoding?.humaneval_score.toFixed(1)}</div>
             {bestCoding && (
               <div className="mt-3 pt-3 border-t border-border">
                 <ModelLinks modelName={bestCoding.model_name} size="sm" />
@@ -348,7 +348,7 @@ export default function HomePage() {
             </div>
             <div className="text-sm font-bold text-primary leading-tight">{bestValue?.model_name ?? '—'}</div>
             <div className="mt-2"><ClusterBadge label={bestValue?.cluster_label ?? ''} size="sm" /></div>
-            <div className="text-xs text-muted mt-2 font-mono">Efficiency ×{bestValue?.cost_efficiency_ratio.toFixed(2)}</div>
+            <div className="text-xs text-primary mt-2 font-mono">Efficiency ×{bestValue?.cost_efficiency_ratio.toFixed(2)}</div>
             {bestValue && (
               <div className="mt-3 pt-3 border-t border-border">
                 <ModelLinks modelName={bestValue.model_name} size="sm" />
@@ -363,7 +363,7 @@ export default function HomePage() {
             </div>
             <div className="text-sm font-bold text-primary leading-tight">{fastest?.model_name ?? '—'}</div>
             <div className="mt-2"><ClusterBadge label={fastest?.cluster_label ?? ''} size="sm" /></div>
-            <div className="text-xs text-muted mt-2 font-mono">{fastest?.tokens_per_second.toFixed(0)} tok/s</div>
+            <div className="text-xs text-primary mt-2 font-mono">{fastest?.tokens_per_second.toFixed(0)} tok/s</div>
             {fastest && (
               <div className="mt-3 pt-3 border-t border-border">
                 <ModelLinks modelName={fastest.model_name} size="sm" />
@@ -378,7 +378,7 @@ export default function HomePage() {
             </div>
             <div className="text-sm font-bold text-primary leading-tight">{mostEfficient?.model_name ?? '—'}</div>
             <div className="mt-2"><ClusterBadge label={mostEfficient?.cluster_label ?? ''} size="sm" /></div>
-            <div className="text-xs text-muted mt-2 font-mono">Score {mostEfficient?.efficiency_score.toFixed(3)}</div>
+            <div className="text-xs text-primary mt-2 font-mono">Score {mostEfficient?.efficiency_score.toFixed(3)}</div>
             {mostEfficient && (
               <div className="mt-3 pt-3 border-t border-border">
                 <ModelLinks modelName={mostEfficient.model_name} size="sm" />
@@ -396,7 +396,7 @@ export default function HomePage() {
           <div className="bg-card border border-border border-l-4 border-l-[#2A9D8F] rounded-xl p-5">
             <div className="flex items-center justify-between mb-3">
               <span className="font-semibold text-sm text-[#2A9D8F]">Open Source</span>
-              <span className="text-xs text-muted">{ossModels.length} models</span>
+              <span className="text-xs text-primary">{ossModels.length} models</span>
             </div>
             <div className="mb-3">
               <MetricBar label="Avg Capability" value={avgOssCap} color="#2A9D8F" />
@@ -410,22 +410,22 @@ export default function HomePage() {
                 {topOss.map((m, i) => (
                   <div key={m.model_name} className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <span className="text-xs text-muted w-4">{i + 1}.</span>
+                      <span className="text-xs text-primary w-4">{i + 1}.</span>
                       <span className="text-xs text-primary">{m.model_name}</span>
                     </div>
-                    <span className="text-xs font-mono text-muted">{(m.capability_score * 100).toFixed(1)}%</span>
+                    <span className="text-xs font-mono text-primary">{(m.capability_score * 100).toFixed(1)}%</span>
                   </div>
                 ))}
               </div>
             </div>
-            <p className="text-xs text-muted leading-relaxed">Open-source models now match proprietary peers on many benchmarks while offering full transparency and self-hosting options.</p>
+            <p className="text-xs text-primary leading-relaxed">Open-source models now match proprietary peers on many benchmarks while offering full transparency and self-hosting options.</p>
           </div>
 
           {/* Proprietary card */}
           <div className="bg-card border border-border border-l-4 border-l-[#457B9D] rounded-xl p-5">
             <div className="flex items-center justify-between mb-3">
               <span className="font-semibold text-sm text-[#457B9D]">Proprietary</span>
-              <span className="text-xs text-muted">{propModels.length} models</span>
+              <span className="text-xs text-primary">{propModels.length} models</span>
             </div>
             <div className="mb-3">
               <MetricBar label="Avg Capability" value={avgPropCap} color="#457B9D" />
@@ -439,15 +439,15 @@ export default function HomePage() {
                 {topProp.map((m, i) => (
                   <div key={m.model_name} className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <span className="text-xs text-muted w-4">{i + 1}.</span>
+                      <span className="text-xs text-primary w-4">{i + 1}.</span>
                       <span className="text-xs text-primary">{m.model_name}</span>
                     </div>
-                    <span className="text-xs font-mono text-muted">{(m.capability_score * 100).toFixed(1)}%</span>
+                    <span className="text-xs font-mono text-primary">{(m.capability_score * 100).toFixed(1)}%</span>
                   </div>
                 ))}
               </div>
             </div>
-            <p className="text-xs text-muted leading-relaxed">Proprietary models still lead on frontier capability scores and offer managed APIs with SLAs — at a higher cost.</p>
+            <p className="text-xs text-primary leading-relaxed">Proprietary models still lead on frontier capability scores and offer managed APIs with SLAs — at a higher cost.</p>
           </div>
         </div>
       </section>
@@ -467,7 +467,7 @@ export default function HomePage() {
             >
               <Icon size={18} className="text-[#457B9D] mb-2" />
               <div className="text-sm font-semibold text-primary">{label}</div>
-              <div className="text-xs text-muted mt-0.5 leading-snug">{desc}</div>
+              <div className="text-xs text-primary mt-0.5 leading-snug">{desc}</div>
             </motion.button>
           ))}
         </div>
@@ -490,7 +490,7 @@ export default function HomePage() {
         return (
           <section className="mt-12 mb-10">
             <h2 className="text-xl font-bold text-primary mb-1">Latest AI News</h2>
-            <p className="text-sm text-muted mb-6">Top stories from the most recent month of 2025</p>
+            <p className="text-sm text-primary mb-6">Top stories from the most recent month of 2025</p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {topStories.map((story, i) => (
                   <motion.div
@@ -509,12 +509,12 @@ export default function HomePage() {
                     </div>
                     <div className="text-[10px] text-muted uppercase tracking-wider mt-2">{story.category}</div>
                     <div className="text-sm font-bold text-primary mt-1 leading-snug">{story.title}</div>
-                    <p className="text-xs text-muted mt-2 leading-relaxed">
+                    <p className="text-xs text-primary mt-2 leading-relaxed">
                       {story.summary.slice(0, 100)}…
                     </p>
                     <div className="flex flex-wrap gap-1 mt-3">
                       {story.tags.slice(0, 3).map((tag) => (
-                        <span key={tag} className="text-[10px] px-2 py-0.5 rounded-md bg-border/50 text-muted font-medium">
+                        <span key={tag} className="text-[10px] px-2 py-0.5 rounded-md bg-border/50 text-primary font-medium">
                           {tag}
                         </span>
                       ))}
