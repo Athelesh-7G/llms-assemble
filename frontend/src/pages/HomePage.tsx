@@ -5,6 +5,7 @@ import {
   BarChart2,
   BookOpen,
   BrainCircuit,
+  Calculator,
   Code2,
   Cpu,
   Database,
@@ -13,6 +14,7 @@ import {
   Network,
   Newspaper,
   Scale,
+  Sparkles,
   Table2,
   Target,
   TrendingDown,
@@ -140,8 +142,10 @@ const QUICK_NAV = [
   { path: '/tradeoffs',  icon: Scale,            label: 'Tradeoffs',  desc: 'Cost vs speed vs capability'       },
   { path: '/rankings',   icon: Trophy,           label: 'Rankings',   desc: 'Best model for each use case'      },
   { path: '/explorer',   icon: Table2,           label: 'Explorer',   desc: 'Full data table with filters'      },
-  { path: '/news',       icon: Newspaper,        label: 'Top News',   desc: '120 AI stories from 2025'          },
-  { path: '/making',     icon: BookOpen,         label: 'Making',     desc: 'How this project was built'        },
+  { path: '/quiz',       icon: Sparkles,         label: 'Find My Model',    desc: '5-question wizard to find your perfect LLM'     },
+  { path: '/cost',       icon: Calculator,       label: 'Cost Calculator',  desc: 'Calculate monthly API spend for all 40 models'  },
+  { path: '/news',       icon: Newspaper,        label: 'Top News',         desc: '120 AI stories from 2025'                       },
+  { path: '/making',     icon: BookOpen,         label: 'Making',           desc: 'How this project was built'                     },
 ]
 
 // ── Component ────────────────────────────────────────────────────────────────
@@ -234,6 +238,26 @@ export default function HomePage() {
           />
         </div>
       </section>
+
+      {/* ── CTA Buttons ── */}
+      <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-center mb-10">
+        <button
+          type="button"
+          onClick={() => navigate('/quiz')}
+          className="flex items-center justify-center gap-2 bg-[#E63946] text-white px-6 py-3 rounded-xl font-semibold text-sm hover:bg-[#E63946]/90 transition-colors"
+        >
+          <Sparkles size={16} />
+          Find My Perfect Model
+        </button>
+        <button
+          type="button"
+          onClick={() => navigate('/cost')}
+          className="flex items-center justify-center gap-2 bg-card border border-border text-primary px-6 py-3 rounded-xl font-semibold text-sm hover:border-[#E63946]/50 transition-colors"
+        >
+          <Calculator size={16} />
+          Calculate My API Cost
+        </button>
+      </div>
 
       {/* ── Top 5 Bar Chart ── */}
       <section className="mb-10">

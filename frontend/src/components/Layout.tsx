@@ -8,10 +8,12 @@ import {
   GitCompare,
   LayoutDashboard,
   Menu,
+  Calculator,
   Moon,
   Network,
   Newspaper,
   Scale,
+  Sparkles,
   Sun,
   Table2,
   TrendingUp,
@@ -36,8 +38,10 @@ const NAV_ITEMS: NavItem[] = [
   { path: '/tradeoffs',  icon: Scale,            label: 'Tradeoffs'  },
   { path: '/rankings',   icon: Trophy,           label: 'Rankings'   },
   { path: '/explorer',   icon: Table2,           label: 'Explorer'   },
-  { path: '/news',       icon: Newspaper,        label: 'Top News'   },
-  { path: '/making',     icon: BookOpen,         label: 'Making'     },
+  { path: '/quiz',       icon: Sparkles,         label: 'Find My Model'    },
+  { path: '/cost',       icon: Calculator,       label: 'Cost Calculator'  },
+  { path: '/news',       icon: Newspaper,        label: 'Top News'         },
+  { path: '/making',     icon: BookOpen,         label: 'Making'           },
 ]
 
 interface LayoutProps {

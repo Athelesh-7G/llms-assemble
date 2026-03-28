@@ -16,6 +16,8 @@ const RankingPage    = React.lazy(() => import('./pages/RankingPage'))
 const ExplorerPage   = React.lazy(() => import('./pages/ExplorerPage'))
 const MakingPage     = React.lazy(() => import('./pages/MakingPage'))
 const NewsPage       = React.lazy(() => import('./pages/NewsPage'))
+const QuizPage       = React.lazy(() => import('./pages/QuizPage'))
+const CostPage       = React.lazy(() => import('./pages/CostPage'))
 
 function SuspenseFallback() {
   return (
@@ -51,6 +53,8 @@ function AnimatedRoutes() {
         <Route path="/explorer"   element={<ExplorerPage />} />
         <Route path="/making"     element={<MakingPage />} />
         <Route path="/news"       element={<NewsPage />} />
+        <Route path="/quiz"       element={<QuizPage />} />
+        <Route path="/cost"       element={<CostPage />} />
       </Routes>
     </AnimatePresence>
   )
