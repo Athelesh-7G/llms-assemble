@@ -6,31 +6,33 @@
 
 :root,
 :root[data-theme="dark"] {
-  --bg-base:      #0F1117;
-  --bg-card:      #1E2029;
-  --bg-sidebar:   #0D0F15;
-  --border:       #2A2D3A;
-  --text-primary: #EAEAEA;
-  --text-muted:   #888888;
-  --text-faint:   #555555;
-  --accent-red:   #E63946;
-  --accent-blue:  #457B9D;
-  --accent-teal:  #2A9D8F;
-  --accent-gold:  #E9C46A;
+  --bg-base:        #0F1117;
+  --bg-card:        #1E2029;
+  --bg-sidebar:     #0D0F15;
+  --border:         #2A2D3A;
+  --text-primary:   #F1F5F9;
+  --text-secondary: #CBD5E1;
+  --text-muted:     #94A3B8;
+  --text-faint:     #555555;
+  --accent-red:     #E63946;
+  --accent-blue:    #457B9D;
+  --accent-teal:    #2A9D8F;
+  --accent-gold:    #E9C46A;
 }
 
 :root[data-theme="light"] {
-  --bg-base:      #F0F2F8;
-  --bg-card:      #FFFFFF;
-  --bg-sidebar:   #E8EBF4;
-  --border:       #CBD0DC;
-  --text-primary: #0D0F1A;
-  --text-muted:   #4A5168;
-  --text-faint:   #7A8099;
-  --accent-red:   #C8102E;
-  --accent-blue:  #1D4ED8;
-  --accent-teal:  #0D7A70;
-  --accent-gold:  #B45309;
+  --bg-base:        #F0F2F8;
+  --bg-card:        #FFFFFF;
+  --bg-sidebar:     #E8EBF4;
+  --border:         #CBD0DC;
+  --text-primary:   #0F172A;
+  --text-secondary: #334155;
+  --text-muted:     #475569;
+  --text-faint:     #7A8099;
+  --accent-red:     #C8102E;
+  --accent-blue:    #1D4ED8;
+  --accent-teal:    #0D7A70;
+  --accent-gold:    #B45309;
 }
 
 /* ── Base styles ──────────────────────────────────────────────────────────── */
@@ -174,4 +176,23 @@ body.custom-cursor-active [role="button"] {
   body.custom-cursor-active * {
     cursor: auto !important;
   }
+}
+
+/* ── Visual polish ────────────────────────────────────────────────────────── */
+
+/* Page section headings — full contrast */
+h1, h2, h3, h4 {
+  color: var(--text-primary);
+}
+
+/* Smoother card hover transitions */
+.border {
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+/* Focus ring for accessibility */
+button:focus-visible, a:focus-visible {
+  outline: 2px solid #E63946;
+  outline-offset: 2px;
+  border-radius: 4px;
 }

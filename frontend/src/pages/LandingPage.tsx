@@ -5,6 +5,7 @@ import {
   BarChart2,
   Calculator,
   ChevronDown,
+  ExternalLink,
   GitCompare,
   LayoutDashboard,
   Network,
@@ -39,23 +40,11 @@ const FEATURES = [
   { icon: Calculator,      title: 'Cost Calc',     desc: 'Live monthly API cost for 40 models'   },
 ]
 
-const STAT_CARDS = [
-  {
-    value: '88.3', label: 'Claude Sonnet 4 — MMLU Score',
-    valueClass: 'text-white', accentClass: 'border-l-[#457B9D]',
-  },
-  {
-    value: '0.340', label: 'Cluster Silhouette Score',
-    valueClass: 'text-[#2A9D8F]', accentClass: 'border-l-[#2A9D8F]',
-  },
-  {
-    value: '~18%', label: 'API Cost Reduction 2025',
-    valueClass: 'text-[#E9C46A]', accentClass: 'border-l-[#E9C46A]',
-  },
-  {
-    value: `${modelsData.length} Models`, label: 'Evaluated & Ranked',
-    valueClass: 'text-[#E63946]', accentClass: 'border-l-[#E63946]',
-  },
+const FEATURE_CARDS = [
+  { icon: Sparkles,     label: 'Find Your Perfect Model', value: '5 Questions',  subtitle: 'Quiz → Top 3 model recommendations',       iconBg: 'bg-[#E63946]/15', iconColor: 'text-[#E63946]', textColor: 'text-[#E63946]', path: '/quiz'     },
+  { icon: Calculator,   label: 'Live Cost Calculator',    value: '40 Models',   subtitle: 'Real-time monthly API cost comparison',     iconBg: 'bg-[#457B9D]/15', iconColor: 'text-[#457B9D]', textColor: 'text-[#457B9D]', path: '/cost'     },
+  { icon: Newspaper,    label: '2025 AI News',            value: '120 Stories', subtitle: 'Top 10 AI events every month of 2025',      iconBg: 'bg-[#E9C46A]/15', iconColor: 'text-[#E9C46A]', textColor: 'text-[#E9C46A]', path: '/news'     },
+  { icon: ExternalLink, label: 'Direct Model Access',     value: '160 Links',   subtitle: 'Chat · API · HuggingFace · Docs per model', iconBg: 'bg-[#2A9D8F]/15', iconColor: 'text-[#2A9D8F]', textColor: 'text-[#2A9D8F]', path: '/explorer' },
 ]
 
 // ── Component ─────────────────────────────────────────────────────────────────
@@ -202,25 +191,35 @@ export default function LandingPage({ onEnter }: LandingPageProps) {
             </p>
           </motion.div>
 
-          {/* Right — floating stat cards with alternating offset */}
-          <div className="flex flex-col gap-3">
-            {STAT_CARDS.map((card, i) => (
-              <motion.div
-                key={card.label}
-                initial={{ opacity: 0, x: 60 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: i * 0.1, ease: [0.16, 1, 0.3, 1] }}
-                className={`bg-white/5 backdrop-blur-md border border-white/10 border-l-4 ${card.accentClass} rounded-2xl p-5 ${
-                  i % 2 === 1 ? 'lg:translate-x-8' : ''
-                }`}
-              >
-                <div className={`text-3xl font-black ${card.valueClass}`}>
-                  {card.value}
-                </div>
-                <div className="text-sm text-white/50 mt-1">{card.label}</div>
-              </motion.div>
-            ))}
+          {/* Right — feature highlight cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {FEATURE_CARDS.map((card, i) => {
+              const Icon = card.icon
+              return (
+                <motion.button
+                  key={card.label}
+                  type="button"
+                  initial={{ opacity: 0, x: 60 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: i * 0.1, ease: [0.16, 1, 0.3, 1] }}
+                  onClick={() => {
+                    window.history.pushState({}, '', card.path)
+                    onEnter()
+                  }}
+                  className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-5 text-left hover:border-white/25 hover:bg-white/[0.08] transition-all duration-200 cursor-pointer group"
+                >
+                  <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${card.iconBg}`}>
+                    <Icon size={18} className={card.iconColor} />
+                  </div>
+                  <div className="text-2xl font-bold text-white mt-3">{card.value}</div>
+                  <div className="text-xs text-white/50 mt-1 leading-snug">{card.subtitle}</div>
+                  <div className={`text-xs mt-3 font-medium ${card.textColor}`}>
+                    {card.label} →
+                  </div>
+                </motion.button>
+              )
+            })}
           </div>
         </div>
       </section>

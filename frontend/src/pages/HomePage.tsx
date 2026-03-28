@@ -229,10 +229,10 @@ export default function HomePage() {
           <StatCard
             icon={<Newspaper size={18} />}
             value={120}
-            label="AI News Stories"
+            label="AI News"
             color="#E9C46A"
             animateCount
-            subtitle="Jan–Dec 2025"
+            subtitle="Stories · Jan–Dec 2025"
           />
         </div>
       </section>
