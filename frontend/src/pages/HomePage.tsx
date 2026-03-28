@@ -173,7 +173,7 @@ export default function HomePage() {
           LLMs Assemble
         </h1>
         <p className="text-xl text-muted mt-2">
-          Quantitative evaluation of {modelsData.length} production LLMs
+          Compare Every LLM. Choose the Best.
         </p>
         <p className="text-sm text-faint mt-3 max-w-2xl">
           Benchmark · Compare · Calculate Costs · Find Your Model · 120 AI Stories

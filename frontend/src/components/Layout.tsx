@@ -106,7 +106,7 @@ function SidebarContent({
             }`}
           >
             <div className="font-bold text-primary text-sm leading-tight">LLMs Assemble</div>
-            <div className="text-xs text-muted mt-0.5">Choose &amp; Play with LLMs</div>
+            <div className="text-xs text-muted mt-0.5">Choose &amp; Play Yours</div>
           </div>
         </Link>
         {onClose && (
