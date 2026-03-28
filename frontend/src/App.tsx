@@ -15,6 +15,7 @@ const TradeoffsPage  = React.lazy(() => import('./pages/TradeoffsPage'))
 const RankingPage    = React.lazy(() => import('./pages/RankingPage'))
 const ExplorerPage   = React.lazy(() => import('./pages/ExplorerPage'))
 const MakingPage     = React.lazy(() => import('./pages/MakingPage'))
+const NewsPage       = React.lazy(() => import('./pages/NewsPage'))
 
 function SuspenseFallback() {
   return (
@@ -49,6 +50,7 @@ function AnimatedRoutes() {
         <Route path="/rankings"   element={<RankingPage />} />
         <Route path="/explorer"   element={<ExplorerPage />} />
         <Route path="/making"     element={<MakingPage />} />
+        <Route path="/news"       element={<NewsPage />} />
       </Routes>
     </AnimatePresence>
   )

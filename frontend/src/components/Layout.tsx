@@ -10,6 +10,7 @@ import {
   Menu,
   Moon,
   Network,
+  Newspaper,
   Scale,
   Sun,
   Table2,
@@ -35,6 +36,7 @@ const NAV_ITEMS: NavItem[] = [
   { path: '/tradeoffs',  icon: Scale,            label: 'Tradeoffs'  },
   { path: '/rankings',   icon: Trophy,           label: 'Rankings'   },
   { path: '/explorer',   icon: Table2,           label: 'Explorer'   },
+  { path: '/news',       icon: Newspaper,        label: 'Top News'   },
   { path: '/making',     icon: BookOpen,         label: 'Making'     },
 ]
 
