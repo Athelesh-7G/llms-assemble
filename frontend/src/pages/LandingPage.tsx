@@ -3,12 +3,14 @@ import { motion } from 'framer-motion'
 import {
   ArrowRight,
   BarChart2,
+  Calculator,
   ChevronDown,
   GitCompare,
   LayoutDashboard,
   Network,
   Newspaper,
   Scale,
+  Sparkles,
   Table2,
   TrendingUp,
   Trophy,
@@ -32,7 +34,9 @@ const FEATURES = [
   { icon: Scale,           title: 'Tradeoffs',   desc: 'Cost vs capability scatter plots'   },
   { icon: Trophy,          title: 'Rankings',    desc: 'Live weight-adjustable ranking'     },
   { icon: Table2,          title: 'Explorer',    desc: 'Filter, sort, export full dataset'  },
-  { icon: Newspaper,       title: 'Top News',    desc: '120 AI stories — Jan–Dec 2025'      },
+  { icon: Newspaper,       title: 'Top News',      desc: '120 AI stories — Jan–Dec 2025'      },
+  { icon: Sparkles,        title: 'Find My Model', desc: '5-question wizard to your perfect LLM' },
+  { icon: Calculator,      title: 'Cost Calc',     desc: 'Live monthly API cost for 40 models'   },
 ]
 
 const STAT_CARDS = [
@@ -120,9 +124,9 @@ export default function LandingPage({ onEnter }: LandingPageProps) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.6 }}
-          className="text-[clamp(0.9rem,2.2vw,1.4rem)] text-white/60 mt-0 max-w-2xl font-light tracking-wide"
+          className="text-[clamp(0.9rem,2.2vw,1.25rem)] text-white/75 max-w-[640px] leading-[1.6] mt-3 mb-2 text-center mx-auto"
         >
-          The most comprehensive quantitative evaluation and AI news platform
+          Benchmark · Compare · Rank · Calculate Costs · Find Your Model · Stay Informed
         </motion.p>
 
         {/* Stats row */}
@@ -234,7 +238,7 @@ export default function LandingPage({ onEnter }: LandingPageProps) {
             What&apos;s inside
           </p>
           <h2 className="text-[clamp(2rem,4vw,3rem)] font-black text-white">
-            9 ways to explore LLMs
+            11 ways to explore LLMs
           </h2>
         </motion.div>
 

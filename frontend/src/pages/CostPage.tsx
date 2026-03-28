@@ -1,8 +1,6 @@
 import { useMemo, useState } from 'react'
 import { motion } from 'framer-motion'
 import { Calculator, CheckCircle, DollarSign, TrendingUp, Trophy } from 'lucide-react'
-import { ScatterPlot } from '../components/charts'
-import type { ScatterPlotPoint } from '../components/charts'
 import ClusterBadge from '../components/ClusterBadge'
 import MetricBar from '../components/MetricBar'
 import ModelLinks from '../components/ModelLinks'
@@ -13,7 +11,7 @@ import type { LLMModel } from '../types/index'
 // ── Constants ─────────────────────────────────────────────────────────────────
 
 const DAYS_PER_MONTH = 30
-const OSS_EFFECTIVE_COST = 0.80 // $/1M tokens estimated hosting cost
+const OSS_FALLBACK_COST = 0.80 // $/1M tokens estimated hosting cost if no effective_cost_per_1m
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -32,11 +30,13 @@ function computeMonthlyCostFor(
   avgOutputTokens: number,
 ): number {
   if (model.is_open_source) {
+    const effectiveCost = model.effective_cost_per_1m > 0 ? model.effective_cost_per_1m : OSS_FALLBACK_COST
     const totalTokens = dailyRequests * (avgInputTokens + avgOutputTokens) * DAYS_PER_MONTH
-    return (totalTokens / 1_000_000) * OSS_EFFECTIVE_COST
+    return (totalTokens / 1_000_000) * effectiveCost
   }
+  const outputRate = model.cost_output_per_1m > 0 ? model.cost_output_per_1m : model.cost_input_per_1m * 3
   const inputCost  = (dailyRequests * avgInputTokens  * DAYS_PER_MONTH / 1_000_000) * model.cost_input_per_1m
-  const outputCost = (dailyRequests * avgOutputTokens * DAYS_PER_MONTH / 1_000_000) * model.cost_output_per_1m
+  const outputCost = (dailyRequests * avgOutputTokens * DAYS_PER_MONTH / 1_000_000) * outputRate
   return inputCost + outputCost
 }
 
@@ -112,8 +112,10 @@ export default function CostPage() {
         return {
           model: m,
           monthlyCost,
-          withinBudget: monthlyCost <= budgetLimit,
-          valueScore: m.capability_score / (monthlyCost + 0.01),
+          withinBudget: budgetLimit === 0 || monthlyCost <= budgetLimit,
+          valueScore: monthlyCost > 0
+            ? (m.capability_score / monthlyCost) * 1000
+            : m.capability_score * 1000,
         }
       })
       .sort((a, b) => {
@@ -131,15 +133,6 @@ export default function CostPage() {
   const bestInBudget     = computedData
     .filter((d) => d.withinBudget)
     .sort((a, b) => b.model.capability_score - a.model.capability_score)[0]
-
-  const scatterData: ScatterPlotPoint[] = computedData.map((d) => ({
-    x:       Math.max(d.monthlyCost, 0.01),
-    y:       d.model.capability_score,
-    size:    Math.max(Math.sqrt(d.model.parameter_size_b) * 3, 4),
-    name:    d.model.model_name,
-    color:   getClusterColor(d.model.cluster_label),
-    cluster: d.model.cluster_label,
-  }))
 
   function getCostBreakdown(m: LLMModel) {
     const daily   = computeMonthlyCostFor(m, dailyRequests, avgInputTokens, avgOutputTokens) / DAYS_PER_MONTH
@@ -253,7 +246,9 @@ export default function CostPage() {
         <div className="mt-5 bg-border/20 rounded-lg px-4 py-2.5 text-xs text-muted text-center">
           Total monthly tokens:{' '}
           <span className="font-mono font-semibold text-primary">
-            {(totalMonthlyTokens / 1_000_000).toFixed(1)}M
+            {totalMonthlyTokens >= 1_000_000_000
+              ? `${(totalMonthlyTokens / 1_000_000_000).toFixed(1)}B`
+              : `${(totalMonthlyTokens / 1_000_000).toFixed(1)}M`}
           </span>
           {' '}({dailyRequests.toLocaleString()} req/day ×{' '}
           {(avgInputTokens + avgOutputTokens).toLocaleString()} tokens avg)
@@ -464,21 +459,6 @@ export default function CostPage() {
         </div>
       </div>
 
-      {/* ── Section 5: Scatter Chart ── */}
-      <div className="bg-card border border-border rounded-2xl p-6 mb-6">
-        <div className="mb-4">
-          <h2 className="text-base font-semibold text-primary">Cost vs Capability — Your Usage</h2>
-          <p className="text-xs text-muted mt-0.5">Dot position = monthly cost at your current settings. Updates live as you adjust sliders.</p>
-        </div>
-        <ScatterPlot
-          data={scatterData}
-          xLabel="Monthly Cost (USD)"
-          yLabel="Capability Score"
-          logX
-          height={350}
-          highlightTop={5}
-        />
-      </div>
     </motion.div>
   )
 }

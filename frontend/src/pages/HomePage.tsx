@@ -176,9 +176,7 @@ export default function HomePage() {
           Quantitative evaluation of {modelsData.length} production LLMs
         </p>
         <p className="text-sm text-faint mt-3 max-w-2xl">
-          Compare performance, cost, speed, and efficiency across frontier and
-          open-source models. Explore 120 curated AI news stories from every month
-          of 2025. All data sourced from public benchmarks and operational metrics.
+          Benchmark 40 production LLMs · Calculate your API costs · Find your perfect model · Explore 120 AI news stories from 2025
         </p>
       </section>
 
