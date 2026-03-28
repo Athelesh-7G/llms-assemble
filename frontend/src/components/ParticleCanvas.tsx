@@ -1,26 +1,36 @@
 import { useEffect, useRef } from "react"
 
-const COLORS = ["#E63946", "#457B9D", "#2A9D8F", "#E9C46A"]
-const PARTICLE_COUNT = 100
-const CONNECTION_DISTANCE = 150
-const MOUSE_REPEL_RADIUS = 100
-const MOUSE_REPEL_STRENGTH = 0.3
+const ACCENT_COLORS = ["#E63946", "#457B9D", "#2A9D8F", "#E9C46A"]
+const NODE_COUNT = 55
+const CONNECTION_DIST = 160
+const PULSE_SPEED = 0.014
 
-interface Particle {
-  x: number
-  y: number
-  vx: number
-  vy: number
-  radius: number
-  color: string
-  opacity: number
+const LLM_LABELS = [
+  "GPT-5", "Claude 4", "Gemini 3", "Llama 4",
+  "Grok 4", "DeepSeek", "Qwen3", "Mistral",
+]
+
+interface Node {
+  x: number; y: number
+  vx: number; vy: number
+  radius: number; color: string
+  pulse: number; pulseDir: number
+  label?: string
+}
+
+interface DataPulse {
+  ax: number; ay: number
+  bx: number; by: number
+  t: number; speed: number; color: string
 }
 
 export default function ParticleCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const mouseRef = useRef({ x: -999, y: -999 })
-  const particlesRef = useRef<Particle[]>([])
-  const frameRef = useRef<number>(0)
+  const mouse     = useRef({ x: -999, y: -999 })
+  const nodes     = useRef<Node[]>([])
+  const pulses    = useRef<DataPulse[]>([])
+  const frame     = useRef(0)
+  const tick      = useRef(0)
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -28,99 +38,175 @@ export default function ParticleCanvas() {
     const ctx = canvas.getContext("2d")
     if (!ctx) return
 
-    const setSize = () => {
-      canvas.width = window.innerWidth
-      canvas.height = window.innerHeight
+    function resize() {
+      canvas!.width  = window.innerWidth
+      canvas!.height = window.innerHeight
     }
-    setSize()
+    resize()
 
-    const initParticles = () => {
-      particlesRef.current = Array.from({ length: PARTICLE_COUNT }, () => ({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        vx: (Math.random() - 0.5) * 0.4,
-        vy: (Math.random() - 0.5) * 0.4,
-        radius: Math.random() * 3 + 1.5,
-        color: COLORS[Math.floor(Math.random() * COLORS.length)],
-        opacity: Math.random() * 0.6 + 0.35,
+    function initNodes() {
+      nodes.current = Array.from({ length: NODE_COUNT }, (_, i) => ({
+        x: Math.random() * canvas!.width,
+        y: Math.random() * canvas!.height,
+        vx: (Math.random() - 0.5) * 0.35,
+        vy: (Math.random() - 0.5) * 0.35,
+        radius: i < LLM_LABELS.length ? 5 + Math.random() * 3 : 2 + Math.random() * 2,
+        color: ACCENT_COLORS[i % ACCENT_COLORS.length],
+        pulse: Math.random(),
+        pulseDir: Math.random() > 0.5 ? 1 : -1,
+        label: i < LLM_LABELS.length ? LLM_LABELS[i] : undefined,
       }))
+      pulses.current = []
     }
-    initParticles()
+    initNodes()
 
-    const loop = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height)
-      const particles = particlesRef.current
-      const mouse = mouseRef.current
+    function spawnPulse() {
+      const ns = nodes.current
+      if (ns.length < 2) return
+      const a = ns[Math.floor(Math.random() * ns.length)]
+      const b = ns[Math.floor(Math.random() * ns.length)]
+      if (a === b) return
+      const dx = b.x - a.x, dy = b.y - a.y
+      if (Math.sqrt(dx * dx + dy * dy) > CONNECTION_DIST) return
+      pulses.current.push({
+        ax: a.x, ay: a.y,
+        bx: b.x, by: b.y,
+        t: 0,
+        speed: PULSE_SPEED + Math.random() * 0.01,
+        color: a.color,
+      })
+    }
 
-      for (const p of particles) {
-        const dx = p.x - mouse.x
-        const dy = p.y - mouse.y
-        const dist = Math.sqrt(dx * dx + dy * dy)
-        if (dist < MOUSE_REPEL_RADIUS && dist > 0) {
-          const force = (MOUSE_REPEL_RADIUS - dist) / MOUSE_REPEL_RADIUS
-          p.vx += (dx / dist) * force * MOUSE_REPEL_STRENGTH
-          p.vy += (dy / dist) * force * MOUSE_REPEL_STRENGTH
-        }
-        p.vx *= 0.99
-        p.vy *= 0.99
-        const speed = Math.sqrt(p.vx * p.vx + p.vy * p.vy)
-        if (speed > 1.5) { p.vx = (p.vx / speed) * 1.5; p.vy = (p.vy / speed) * 1.5 }
-        p.x += p.vx
-        p.y += p.vy
-        if (p.x < 0) { p.x = 0; p.vx *= -1 }
-        if (p.x > canvas.width) { p.x = canvas.width; p.vx *= -1 }
-        if (p.y < 0) { p.y = 0; p.vy *= -1 }
-        if (p.y > canvas.height) { p.y = canvas.height; p.vy *= -1 }
-        ctx.beginPath()
-        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2)
-        ctx.fillStyle = p.color + Math.round(p.opacity * 255).toString(16).padStart(2, "0")
-        ctx.fill()
-      }
+    function drawGlow(x: number, y: number, r: number, color: string, alpha: number) {
+      const g = ctx!.createRadialGradient(x, y, 0, x, y, r * 3.5)
+      g.addColorStop(0, color + Math.round(alpha * 255).toString(16).padStart(2, "0"))
+      g.addColorStop(1, color + "00")
+      ctx!.beginPath()
+      ctx!.arc(x, y, r * 3.5, 0, Math.PI * 2)
+      ctx!.fillStyle = g
+      ctx!.fill()
+    }
 
-      for (let i = 0; i < particles.length; i++) {
-        for (let j = i + 1; j < particles.length; j++) {
-          const dx = particles[i].x - particles[j].x
-          const dy = particles[i].y - particles[j].y
+    function loop() {
+      const W = canvas!.width, H = canvas!.height
+      ctx!.clearRect(0, 0, W, H)
+
+      tick.current++
+
+      // Spawn pulse every ~90 frames
+      if (tick.current % 90 === 0) spawnPulse()
+
+      const ns = nodes.current
+
+      // Draw edges between nearby nodes
+      for (let i = 0; i < ns.length; i++) {
+        for (let j = i + 1; j < ns.length; j++) {
+          const dx = ns[i].x - ns[j].x
+          const dy = ns[i].y - ns[j].y
           const dist = Math.sqrt(dx * dx + dy * dy)
-          if (dist < CONNECTION_DISTANCE) {
-            const opacity = (1 - dist / CONNECTION_DISTANCE) * 0.3
-            ctx.beginPath()
-            ctx.moveTo(particles[i].x, particles[i].y)
-            ctx.lineTo(particles[j].x, particles[j].y)
-            const gradient = ctx.createLinearGradient(
-              particles[i].x, particles[i].y,
-              particles[j].x, particles[j].y
-            )
-            const col1 = particles[i].color
-            const col2 = particles[j].color
-            gradient.addColorStop(0, col1 + Math.round(opacity * 255).toString(16).padStart(2, "0"))
-            gradient.addColorStop(1, col2 + Math.round(opacity * 255).toString(16).padStart(2, "0"))
-            ctx.strokeStyle = gradient
-            ctx.lineWidth = opacity * 2.5
-            ctx.stroke()
-          }
+          if (dist > CONNECTION_DIST) continue
+          const alpha = (1 - dist / CONNECTION_DIST) * 0.35
+
+          // Gradient edge
+          const grad = ctx!.createLinearGradient(ns[i].x, ns[i].y, ns[j].x, ns[j].y)
+          grad.addColorStop(0, ns[i].color + Math.round(alpha * 255).toString(16).padStart(2, "0"))
+          grad.addColorStop(1, ns[j].color + Math.round(alpha * 255).toString(16).padStart(2, "0"))
+          ctx!.beginPath()
+          ctx!.moveTo(ns[i].x, ns[i].y)
+          ctx!.lineTo(ns[j].x, ns[j].y)
+          ctx!.strokeStyle = grad
+          ctx!.lineWidth = alpha * 2.5
+          ctx!.stroke()
         }
       }
 
-      frameRef.current = requestAnimationFrame(loop)
+      // Draw data pulses
+      pulses.current = pulses.current.filter(p => {
+        p.t += p.speed
+        if (p.t > 1) return false
+        const px = p.ax + (p.bx - p.ax) * p.t
+        const py = p.ay + (p.by - p.ay) * p.t
+        // Glow trail
+        drawGlow(px, py, 4, p.color, 0.5)
+        // Dot
+        ctx!.beginPath()
+        ctx!.arc(px, py, 3, 0, Math.PI * 2)
+        ctx!.fillStyle = p.color + "FF"
+        ctx!.fill()
+        return true
+      })
+
+      // Draw nodes
+      for (const n of ns) {
+        // Mouse repulsion
+        const dx = n.x - mouse.current.x
+        const dy = n.y - mouse.current.y
+        const dist = Math.sqrt(dx * dx + dy * dy)
+        if (dist < 120 && dist > 0) {
+          const f = (120 - dist) / 120 * 0.25
+          n.vx += (dx / dist) * f
+          n.vy += (dy / dist) * f
+        }
+
+        // Damping + speed cap
+        n.vx *= 0.98; n.vy *= 0.98
+        const spd = Math.sqrt(n.vx * n.vx + n.vy * n.vy)
+        if (spd > 1.2) { n.vx = n.vx / spd * 1.2; n.vy = n.vy / spd * 1.2 }
+
+        n.x += n.vx; n.y += n.vy
+        if (n.x < 0) { n.x = 0; n.vx *= -1 }
+        if (n.x > W) { n.x = W; n.vx *= -1 }
+        if (n.y < 0) { n.y = 0; n.vy *= -1 }
+        if (n.y > H) { n.y = H; n.vy *= -1 }
+
+        // Pulse glow
+        n.pulse += n.pulseDir * 0.018
+        if (n.pulse > 1) { n.pulse = 1; n.pulseDir = -1 }
+        if (n.pulse < 0) { n.pulse = 0; n.pulseDir = 1 }
+
+        // Outer glow
+        drawGlow(n.x, n.y, n.radius, n.color, 0.25 + n.pulse * 0.25)
+
+        // Node dot
+        ctx!.beginPath()
+        ctx!.arc(n.x, n.y, n.radius, 0, Math.PI * 2)
+        ctx!.fillStyle = n.color + "CC"
+        ctx!.fill()
+
+        // Inner bright core
+        ctx!.beginPath()
+        ctx!.arc(n.x, n.y, n.radius * 0.45, 0, Math.PI * 2)
+        ctx!.fillStyle = "#FFFFFF" + Math.round((0.5 + n.pulse * 0.5) * 255).toString(16).padStart(2, "0")
+        ctx!.fill()
+
+        // Label for named nodes
+        if (n.label) {
+          ctx!.font = "bold 10px Inter, sans-serif"
+          ctx!.fillStyle = "#FFFFFF99"
+          ctx!.textAlign = "center"
+          ctx!.fillText(n.label, n.x, n.y - n.radius - 5)
+        }
+      }
+
+      frame.current = requestAnimationFrame(loop)
     }
     loop()
 
-    const onMouseMove = (e: MouseEvent) => {
-      const rect = canvas.getBoundingClientRect()
-      mouseRef.current = { x: e.clientX - rect.left, y: e.clientY - rect.top }
+    const onMove = (e: MouseEvent) => {
+      const r = canvas!.getBoundingClientRect()
+      mouse.current = { x: e.clientX - r.left, y: e.clientY - r.top }
     }
-    const onMouseLeave = () => { mouseRef.current = { x: -999, y: -999 } }
-    const onResize = () => { setSize(); initParticles() }
+    const onLeave = () => { mouse.current = { x: -999, y: -999 } }
+    const onResize = () => { resize(); initNodes() }
 
-    window.addEventListener("mousemove", onMouseMove)
-    window.addEventListener("mouseleave", onMouseLeave)
+    window.addEventListener("mousemove", onMove)
+    window.addEventListener("mouseleave", onLeave)
     window.addEventListener("resize", onResize)
 
     return () => {
-      cancelAnimationFrame(frameRef.current)
-      window.removeEventListener("mousemove", onMouseMove)
-      window.removeEventListener("mouseleave", onMouseLeave)
+      cancelAnimationFrame(frame.current)
+      window.removeEventListener("mousemove", onMove)
+      window.removeEventListener("mouseleave", onLeave)
       window.removeEventListener("resize", onResize)
     }
   }, [])
@@ -128,15 +214,7 @@ export default function ParticleCanvas() {
   return (
     <canvas
       ref={canvasRef}
-      style={{
-        position: "fixed",
-        top: 0,
-        left: 0,
-        width: "100%",
-        height: "100%",
-        pointerEvents: "none",
-        zIndex: 0,
-      }}
+      className="particle-canvas"
     />
   )
 }
