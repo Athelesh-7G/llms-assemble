@@ -11,6 +11,7 @@ import {
   GitCompare,
   LayoutDashboard,
   Network,
+  Newspaper,
   Scale,
   Server,
   Table2,
@@ -222,6 +223,7 @@ const PAGE_ROWS: PageRowProps[] = [
   { icon: Scale,           label: 'Tradeoff Analysis',  description: 'Cost, speed, and capability maps',      path: '/tradeoffs',  accent: 'bg-[#E9C46A]'  },
   { icon: Trophy,          label: 'Live Rankings',      description: 'Weighted composite scoring',            path: '/rankings',   accent: 'bg-[#E63946]'  },
   { icon: Table2,          label: 'Data Explorer',      description: 'Filter and sort every model',           path: '/explorer',   accent: 'bg-[#2A9D8F]'  },
+  { icon: Newspaper,       label: 'Top News',           description: '120 curated AI stories from 2025',      path: '/news',       accent: 'bg-[#E9C46A]'  },
 ]
 
 const FINDINGS: FindingCardProps[] = [
@@ -292,7 +294,7 @@ export default function MakingPage() {
           A complete data science project - from raw benchmark data to an interactive evaluation platform
         </p>
         <div className="flex flex-wrap justify-center gap-3">
-          {['40 Models Evaluated', '480 Data Points', '4 Clusters Found', '8 Interactive Pages'].map((badge) => (
+          {['40 Models Evaluated', '480 Data Points', '4 Clusters Found', '9 Interactive Pages', '120 News Stories'].map((badge) => (
             <span
               key={badge}
               className="bg-card border border-border rounded-full px-4 py-1.5 text-sm text-primary"

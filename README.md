@@ -94,6 +94,7 @@ LLMs Assemble is a data-driven platform that quantitatively evaluates 40 large l
 | `/rankings` | Rankings | Live ranking with adjustable weight sliders for 4 use-case profiles |
 | `/explorer` | Explorer | Searchable, filterable, sortable full model data table with CSV export |
 | `/making` | Making Of | Pipeline walkthrough, methodology, correlation matrix, workflow diagram |
+| `/news` | Top News | 120 curated AI stories from every month of 2025 |
 
 ---
 
@@ -108,6 +109,7 @@ LLMs Assemble is a data-driven platform that quantitatively evaluates 40 large l
 - **Light / dark theme** — system-aware with manual toggle
 - **Mobile responsive** — all pages and charts adapt to small screens
 - **CSV export** — raw engineered dataset available for download
+- **120 curated AI news stories** — top 10 stories per month, Jan–Dec 2025, with impact ratings, tags, and source links
 
 ---
 

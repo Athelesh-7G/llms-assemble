@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import {
+  ArrowRight,
   BarChart2,
   BookOpen,
   BrainCircuit,
@@ -10,6 +11,7 @@ import {
   DollarSign,
   GitCompare,
   Network,
+  Newspaper,
   Scale,
   Table2,
   Target,
@@ -30,6 +32,7 @@ import {
   modelsData,
   monthlyData,
 } from '../data/loader'
+import { NEWS_DATA } from '../data/newsData'
 import StatCard from '../components/StatCard'
 
 // ── Helper: Pearson correlation ──────────────────────────────────────────────
@@ -137,6 +140,7 @@ const QUICK_NAV = [
   { path: '/tradeoffs',  icon: Scale,            label: 'Tradeoffs',  desc: 'Cost vs speed vs capability'       },
   { path: '/rankings',   icon: Trophy,           label: 'Rankings',   desc: 'Best model for each use case'      },
   { path: '/explorer',   icon: Table2,           label: 'Explorer',   desc: 'Full data table with filters'      },
+  { path: '/news',       icon: Newspaper,        label: 'Top News',   desc: '120 AI stories from 2025'          },
   { path: '/making',     icon: BookOpen,         label: 'Making',     desc: 'How this project was built'        },
 ]
 
@@ -169,14 +173,14 @@ export default function HomePage() {
         </p>
         <p className="text-sm text-faint mt-3 max-w-2xl">
           Compare performance, cost, speed, and efficiency across frontier and
-          open-source models. All data is sourced from public benchmarks and
-          operational metrics — updated through 2025.
+          open-source models. Explore 120 curated AI news stories from every month
+          of 2025. All data sourced from public benchmarks and operational metrics.
         </p>
       </section>
 
       {/* ── KPI Cards ── */}
       <section className="mb-10">
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-4">
           <StatCard
             icon={<Database size={18} />}
             value={modelsData.length}
@@ -219,6 +223,14 @@ export default function HomePage() {
             color="#2A9D8F"
             animateCount
             subtitle={`of ${modelsData.length} models`}
+          />
+          <StatCard
+            icon={<Newspaper size={18} />}
+            value={120}
+            label="AI News Stories"
+            color="#E9C46A"
+            animateCount
+            subtitle="Jan–Dec 2025"
           />
         </div>
       </section>
@@ -437,6 +449,69 @@ export default function HomePage() {
           ))}
         </div>
       </section>
+
+      {/* ── Latest AI News ── */}
+      {(() => {
+        const latestMonth = NEWS_DATA[NEWS_DATA.length - 1]
+        const topStories = latestMonth.stories.slice(0, 3)
+        const RANK_CLASSES = [
+          'bg-[#E9C46A]/10 text-[#E9C46A]',
+          'bg-[#C0C0C0]/10 text-[#C0C0C0]',
+          'bg-[#CD7F32]/10 text-[#CD7F32]',
+        ]
+        const IMPACT_CLASSES: Record<string, string> = {
+          Critical: 'bg-[#E63946]/10 text-[#E63946]',
+          High:     'bg-[#E9C46A]/10 text-[#E9C46A]',
+          Medium:   'bg-[#457B9D]/10 text-[#457B9D]',
+        }
+        return (
+          <section className="mt-12 mb-10">
+            <h2 className="text-xl font-bold text-primary mb-1">Latest AI News</h2>
+            <p className="text-sm text-muted mb-6">Top stories from the most recent month of 2025</p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {topStories.map((story, i) => (
+                  <motion.div
+                    key={story.rank}
+                    className="bg-card border border-border rounded-xl p-5 hover:border-[#E63946]/30 transition-all"
+                    whileHover={{ scale: 1.01 }}
+                    transition={{ duration: 0.15 }}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className={`w-7 h-7 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 ${RANK_CLASSES[i] ?? 'bg-border/50 text-muted'}`}>
+                        {story.rank}
+                      </div>
+                      <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${IMPACT_CLASSES[story.impact] ?? 'bg-border/50 text-muted'}`}>
+                        {story.impact}
+                      </span>
+                    </div>
+                    <div className="text-[10px] text-muted uppercase tracking-wider mt-2">{story.category}</div>
+                    <div className="text-sm font-bold text-primary mt-1 leading-snug">{story.title}</div>
+                    <p className="text-xs text-muted mt-2 leading-relaxed">
+                      {story.summary.slice(0, 100)}…
+                    </p>
+                    <div className="flex flex-wrap gap-1 mt-3">
+                      {story.tags.slice(0, 3).map((tag) => (
+                        <span key={tag} className="text-[10px] px-2 py-0.5 rounded-md bg-border/50 text-muted font-medium">
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  </motion.div>
+              ))}
+            </div>
+            <div className="flex justify-center mt-6">
+              <button
+                type="button"
+                onClick={() => navigate('/news')}
+                className="flex items-center gap-2 bg-card border border-border rounded-lg px-6 py-2.5 text-sm text-primary hover:border-[#E63946]/50 hover:text-[#E63946] transition-colors"
+              >
+                View All 120 Stories
+                <ArrowRight size={14} />
+              </button>
+            </div>
+          </section>
+        )
+      })()}
 
       {/* ── Team Footer ── */}
       <footer className="border-t border-border pt-6 pb-2 text-center">

@@ -7,6 +7,7 @@ import {
   GitCompare,
   LayoutDashboard,
   Network,
+  Newspaper,
   Scale,
   Table2,
   TrendingUp,
@@ -31,6 +32,7 @@ const FEATURES = [
   { icon: Scale,           title: 'Tradeoffs',   desc: 'Cost vs capability scatter plots'   },
   { icon: Trophy,          title: 'Rankings',    desc: 'Live weight-adjustable ranking'     },
   { icon: Table2,          title: 'Explorer',    desc: 'Filter, sort, export full dataset'  },
+  { icon: Newspaper,       title: 'Top News',    desc: '120 AI stories — Jan–Dec 2025'      },
 ]
 
 const STAT_CARDS = [
@@ -79,7 +81,7 @@ export default function LandingPage({ onEnter }: LandingPageProps) {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="border border-[#E63946]/40 bg-[#E63946]/10 rounded-full px-4 py-1.5 text-[10px] sm:text-xs text-[#E63946] font-semibold tracking-widest uppercase mb-8"
         >
-          Data Science · 2025 Data · {modelsData.length} Models Evaluated
+          Data Science · 2025 · {modelsData.length} Models · 120 AI News Stories
         </motion.div>
 
         {/* Staggered headline — each word animates in */}
@@ -120,7 +122,7 @@ export default function LandingPage({ onEnter }: LandingPageProps) {
           transition={{ duration: 0.6, delay: 0.6 }}
           className="text-[clamp(0.9rem,2.2vw,1.4rem)] text-white/60 mt-0 max-w-2xl font-light tracking-wide"
         >
-          The most comprehensive quantitative evaluation
+          The most comprehensive quantitative evaluation and AI news platform
         </motion.p>
 
         {/* Stats row */}
@@ -134,6 +136,7 @@ export default function LandingPage({ onEnter }: LandingPageProps) {
             { val: `${modelsData.length}`, label: 'Models' },
             { val: '12 Months', label: 'Data' },
             { val: '4', label: 'Evaluation Profiles' },
+            { val: '120', label: 'AI News Stories' },
           ].map(({ val, label }) => (
             <div
               key={label}
@@ -231,7 +234,7 @@ export default function LandingPage({ onEnter }: LandingPageProps) {
             What&apos;s inside
           </p>
           <h2 className="text-[clamp(2rem,4vw,3rem)] font-black text-white">
-            8 ways to explore LLMs
+            9 ways to explore LLMs
           </h2>
         </motion.div>
 
