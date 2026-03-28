@@ -217,7 +217,7 @@ export default function NewsPage() {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.15 }}
-          className="grid grid-cols-1 lg:grid-cols-2 gap-4"
+          className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start"
         >
           {activeData.stories.map((story, i) => (
             <NewsCard key={story.rank} item={story} index={i} />
