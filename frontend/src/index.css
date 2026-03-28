@@ -12,7 +12,7 @@
   --border:         #2A2D3A;
   --text-primary:   #FFFFFF;
   --text-secondary: #E2E8F0;
-  --text-muted:     #CBD5E1;
+  --text-muted:     #E2E8F0;
   --text-faint:     #555555;
   --accent-red:     #E63946;
   --accent-blue:    #457B9D;
@@ -201,4 +201,23 @@ button:focus-visible, a:focus-visible {
 /* Smooth hover transitions on rounded cards */
 [class*="rounded-xl"], [class*="rounded-2xl"] {
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+/* Force all muted text to be visible in dark theme */
+[data-theme="dark"] .text-muted,
+[data-theme="dark"] [class*="text-muted"],
+[data-theme="dark"] p,
+[data-theme="dark"] span:not([class*="badge"]):not([class*="pill"]) {
+  color: #E2E8F0 !important;
+}
+
+/* Keep light theme text dark */
+[data-theme="light"] .text-muted,
+[data-theme="light"] [class*="text-muted"] {
+  color: #475569 !important;
+}
+
+[data-theme="light"] p,
+[data-theme="light"] span:not([class*="badge"]):not([class*="pill"]) {
+  color: #1E293B !important;
 }
