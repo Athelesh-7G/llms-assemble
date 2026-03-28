@@ -680,9 +680,6 @@ export default function MakingPage() {
 
       {/* ── Footer ── */}
       <footer className="border-t border-border pt-6 pb-2 text-center">
-        <p className="text-sm font-medium text-primary">
-          Built by Athelesh Balachandran, Barath Krishna R, Kamaleshwar K K
-        </p>
         <p className="text-xs text-muted mt-1">
           Data Science Project · 2025 Data · LLMs Assemble
         </p>

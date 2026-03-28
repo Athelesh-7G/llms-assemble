@@ -95,19 +95,6 @@ export default function LandingPage({ onEnter }: LandingPageProps) {
           ))}
         </div>
 
-        <p
-          className="tracking-widest uppercase font-medium"
-          style={{
-            color: "rgba(255,255,255,0.85)",
-            fontSize: "clamp(0.65rem, 1.2vw, 0.85rem)",
-            marginTop: "0.5rem",
-            marginBottom: "0.5rem",
-            letterSpacing: "0.2em"
-          }}
-        >
-          Built by Athelesh Balachandran · Barath Krishna R · Kamaleshwar K K
-        </p>
-
         {/* Subtitle */}
         <p className="text-center mx-auto whitespace-nowrap text-[clamp(0.7rem,1.6vw,1.1rem)] text-white/80 max-w-full tracking-[0.02em] mt-3">
           Benchmark · Compare · Rank · Calculate Costs · Find Your Model · Stay Informed
@@ -288,10 +275,6 @@ export default function LandingPage({ onEnter }: LandingPageProps) {
 
           <p className="text-xl text-white/40 mt-6">
             {modelsData.length} models. 12 months of data. One platform.
-          </p>
-
-          <p className="mt-4 text-sm text-white/25">
-            Built by Athelesh Balachandran, Barath Krishna R, Kamaleshwar K K
           </p>
 
           {/* Enter button */}
