@@ -204,6 +204,12 @@ button:focus-visible, a:focus-visible {
 }
 
 /* Force all muted text to be visible in dark theme */
+[data-theme="dark"] .text-muted {
+  color: #E2E8F0 !important;
+}
+[data-theme="dark"] [class*="opacity-"] {
+  opacity: 1 !important;
+}
 [data-theme="dark"] .text-muted,
 [data-theme="dark"] [class*="text-muted"],
 [data-theme="dark"] p,

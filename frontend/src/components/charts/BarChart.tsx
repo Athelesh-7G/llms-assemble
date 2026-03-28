@@ -19,6 +19,7 @@ interface BarChartProps {
   yLabel?: string
   height?: number
   showValues?: boolean
+  domain?: [number, number]
 }
 
 const tooltipProps = {
@@ -47,6 +48,7 @@ export default function BarChart({
   title,
   height = 300,
   showValues = false,
+  domain,
 }: BarChartProps) {
   const isHorizontal = orientation === 'horizontal'
 
@@ -64,7 +66,7 @@ export default function BarChart({
               <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" horizontal={false} />
               <XAxis
                 type="number"
-                domain={[0, (dataMax: number) => Math.ceil(dataMax * 1.18)]}
+                domain={domain ?? [0, (dataMax: number) => Math.ceil(dataMax * 1.18)]}
                 stroke="var(--text-muted)"
                 tick={{ fill: 'var(--text-muted)' }}
               />
