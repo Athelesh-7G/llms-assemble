@@ -59,12 +59,12 @@ export default function BarChart({
             <RechartsBarChart
               data={data}
               layout="vertical"
-              margin={{ top: 5, right: 65, left: 0, bottom: 5 }}
+              margin={{ top: 5, right: 70, left: 0, bottom: 5 }}
             >
               <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" horizontal={false} />
               <XAxis
                 type="number"
-                domain={[0, (dataMax: number) => dataMax * 1.15]}
+                domain={[0, (dataMax: number) => Math.ceil(dataMax * 1.18)]}
                 stroke="var(--text-muted)"
                 tick={{ fill: 'var(--text-muted)' }}
               />
@@ -83,10 +83,11 @@ export default function BarChart({
                 radius={[0, 4, 4, 0]}
                 label={showValues ? {
                   position: "right",
-                  formatter: (value: number) => value.toFixed(1),
+                  formatter: (value: unknown) =>
+                    typeof value === "number" ? value.toFixed(1) : String(value),
                   fill: "var(--text-primary)",
                   fontSize: 11,
-                  fontWeight: 500,
+                  fontWeight: 600,
                 } : false}
               >
                 {data.map((entry, i) => (

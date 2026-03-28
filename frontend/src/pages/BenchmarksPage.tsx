@@ -89,11 +89,22 @@ export default function BenchmarksPage() {
   }))
 
   // ── Histogram ──
-  const scores = modelsData.map((m) => m[activeBenchmark] as number)
-  const histData = HISTOGRAM_BUCKETS.map((b) => ({
-    label: b.label,
-    count: scores.filter((s) => s >= b.min && s < b.max).length,
-  }))
+  const isOverallTab = activeTab.label === 'Overall'
+
+  const histData = isOverallTab
+    ? [
+        { label: '0–20%',   count: modelsData.filter((m) => m.capability_score < 0.2).length },
+        { label: '20–40%',  count: modelsData.filter((m) => m.capability_score >= 0.2 && m.capability_score < 0.4).length },
+        { label: '40–60%',  count: modelsData.filter((m) => m.capability_score >= 0.4 && m.capability_score < 0.6).length },
+        { label: '60–80%',  count: modelsData.filter((m) => m.capability_score >= 0.6 && m.capability_score < 0.8).length },
+        { label: '80–100%', count: modelsData.filter((m) => m.capability_score >= 0.8).length },
+      ]
+    : HISTOGRAM_BUCKETS.map((b) => ({
+        label: b.label,
+        count: modelsData
+          .map((m) => m[activeBenchmark] as number)
+          .filter((s) => s >= b.min && s < b.max).length,
+      }))
 
   // ── OSS vs Proprietary ──
   const ossModels = modelsData.filter((m) => m.is_open_source)
@@ -116,18 +127,22 @@ export default function BenchmarksPage() {
   // ── Org averages ──
   const orgMap = new Map<string, number[]>()
   modelsData.forEach((m) => {
-    const key = m.organization
-    const existing = orgMap.get(key) ?? []
-    existing.push(m[activeBenchmark] as number)
-    orgMap.set(key, existing)
+    const org = m.organization || 'Other'
+    const score = isOverallTab
+      ? (m.capability_score ?? 0) * 100
+      : (m[activeBenchmark] as number)
+    const existing = orgMap.get(org) ?? []
+    existing.push(score)
+    orgMap.set(org, existing)
   })
   const orgAvgs = Array.from(orgMap.entries())
-    .filter(([, vals]) => vals.length >= 2)
     .map(([org, vals]) => ({
       org,
       avg: parseFloat((vals.reduce((a, b) => a + b, 0) / vals.length).toFixed(2)),
     }))
+    .filter((x) => x.avg > 0)
     .sort((a, b) => b.avg - a.avg)
+    .slice(0, 8)
 
   // ── Sortable table ──
   const maxVals: Record<string, number> = {}

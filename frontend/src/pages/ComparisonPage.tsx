@@ -65,7 +65,7 @@ export default function ComparisonPage() {
     : []
 
   function addModel(name: string) {
-    if (selectedModels.length >= 4) {
+    if (selectedModels.length >= 6) {
       setMaxWarn(true)
       setTimeout(() => setMaxWarn(false), 2000)
     } else {
@@ -105,7 +105,7 @@ export default function ComparisonPage() {
       {/* ── Header ── */}
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-primary">Model Comparison</h1>
-        <p className="text-sm text-muted mt-1">Select up to 4 models to compare side by side</p>
+        <p className="text-sm text-muted mt-1">Select up to 6 models to compare side by side</p>
       </div>
 
       {/* ── Model Selector ── */}
@@ -148,7 +148,7 @@ export default function ComparisonPage() {
       </div>
 
       {maxWarn && (
-        <p className="text-xs text-[#E63946] mb-2">Maximum 4 models</p>
+        <p className="text-xs text-[#E63946] mb-2">Maximum 6 models</p>
       )}
 
       {/* Selected chips */}
@@ -197,7 +197,7 @@ export default function ComparisonPage() {
 
       {/* ── Metric Cards ── */}
       {selectedModels.length >= 1 && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mt-6">
           {selectedModelData.map((m) => (
             <motion.div
               key={m.model_name}
@@ -252,7 +252,7 @@ export default function ComparisonPage() {
             Head-to-Head: Who Wins Where?
           </h2>
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+            <table className="w-full text-sm min-w-[700px]">
               <thead>
                 <tr className="sticky top-0 bg-card">
                   <th className="text-left text-xs text-muted uppercase py-2 pr-4">Metric</th>

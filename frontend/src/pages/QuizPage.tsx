@@ -354,13 +354,24 @@ export default function QuizPage() {
               )
             })}
 
-            <div className="flex justify-center pt-4 pb-8">
+            <div className="flex justify-center gap-6 mt-6 pt-4 pb-8">
               <button
                 type="button"
                 onClick={handleRetake}
                 className="text-sm text-muted hover:text-primary transition-colors flex items-center gap-2"
               >
                 <ChevronLeft size={16} /> Retake Quiz
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setShowResults(false)
+                  setCurrentStep(QUESTIONS.length - 1)
+                  setSelectedOption((answers as Record<string, string>)[QUESTIONS[QUESTIONS.length - 1].id] ?? null)
+                }}
+                className="text-sm text-[#457B9D] hover:text-primary transition-colors flex items-center gap-2"
+              >
+                <ChevronLeft size={16} /> Edit Last Answer
               </button>
             </div>
           </div>

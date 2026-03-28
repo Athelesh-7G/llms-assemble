@@ -4,19 +4,75 @@ import {
   BarChart as RechartsBarChart,
   CartesianGrid,
   Legend,
+  PolarAngleAxis,
+  PolarGrid,
+  PolarRadiusAxis,
+  Radar,
+  RadarChart as RechartsRadarChart,
   ResponsiveContainer,
   Tooltip,
   XAxis,
   YAxis,
 } from 'recharts'
-import { ClusterScatter, CorrelationHeatmap } from '../components/charts'
+import { CorrelationHeatmap } from '../components/charts'
 import ClusterBadge from '../components/ClusterBadge'
 import MetricBar from '../components/MetricBar'
 import { clustersData, correlationsData, getClusterColor, modelsData } from '../data/loader'
 
 const CLUSTER_ORDER = ['Frontier', 'Balanced', 'Efficient', 'Lightweight'] as const
 
+const CLUSTER_COLORS: Record<string, string> = {
+  Frontier:    '#E63946',
+  Balanced:    '#457B9D',
+  Efficient:   '#2A9D8F',
+  Lightweight: '#E9C46A',
+}
+
+const CLUSTER_CARD_CLASSES: Record<string, { border: string; bg: string; text: string }> = {
+  Frontier:    { border: 'border-[#E63946]/25', bg: 'bg-[#E63946]/5',  text: 'text-[#E63946]' },
+  Balanced:    { border: 'border-[#457B9D]/25', bg: 'bg-[#457B9D]/5',  text: 'text-[#457B9D]' },
+  Efficient:   { border: 'border-[#2A9D8F]/25', bg: 'bg-[#2A9D8F]/5',  text: 'text-[#2A9D8F]' },
+  Lightweight: { border: 'border-[#E9C46A]/25', bg: 'bg-[#E9C46A]/5',  text: 'text-[#E9C46A]' },
+}
+
+function avg(arr: number[]): number {
+  return arr.length ? arr.reduce((a, b) => a + b, 0) / arr.length : 0
+}
+
 export default function ClustersPage() {
+  // ── Cluster profile radar data ──
+  const clusterNames = ['Frontier', 'Balanced', 'Efficient', 'Lightweight']
+
+  const radarData = [
+    { metric: 'Capability' },
+    { metric: 'Speed'      },
+    { metric: 'Efficiency' },
+    { metric: 'Cost Value' },
+    { metric: 'Context'    },
+  ].map((row) => {
+    const out: Record<string, unknown> = { metric: row.metric }
+    clusterNames.forEach((cn) => {
+      const ms = modelsData.filter((m) => m.cluster_label === cn)
+      if (!ms.length) { out[cn] = 0; return }
+      if (row.metric === 'Capability')
+        out[cn] = +(avg(ms.map((m) => m.capability_score)) * 100).toFixed(1)
+      else if (row.metric === 'Speed')
+        out[cn] = +(avg(ms.map((m) => m.speed_score ?? 0)) * 100).toFixed(1)
+      else if (row.metric === 'Efficiency')
+        out[cn] = +(avg(ms.map((m) => m.efficiency_score ?? 0)) * 100).toFixed(1)
+      else if (row.metric === 'Cost Value')
+        out[cn] = +(avg(ms.map((m) => Math.max(0, 1 - (m.cost_norm ?? 0)))) * 100).toFixed(1)
+      else if (row.metric === 'Context')
+        out[cn] = +(avg(ms.map((m) => Math.min((m.context_window_k ?? 8) / 10, 100)))).toFixed(1)
+    })
+    return out
+  })
+
+  const clusterCounts = clusterNames.reduce((acc, cn) => {
+    acc[cn] = modelsData.filter((m) => m.cluster_label === cn).length
+    return acc
+  }, {} as Record<string, number>)
+
   // Build grouped bar data for feature comparison
   const featureData = [
     { dimension: 'Capability' },
@@ -48,17 +104,62 @@ export default function ClustersPage() {
         </p>
       </div>
 
-      {/* ── PCA Scatter ── */}
-      <div className="bg-card rounded-xl p-6 border border-border">
-        <div className="mb-4">
-          <h2 className="text-lg font-semibold text-primary">
-            Principal Component Analysis — 2D Projection
-          </h2>
-          <p className="text-xs text-faint mt-1">
-            Dimensionality reduction of 5 clustering features into 2 principal components
-          </p>
+      {/* ── Cluster Profile Radar ── */}
+      <div className="bg-card border border-border rounded-2xl p-6">
+        <h2 className="text-lg font-bold text-primary">Cluster Profiles — Average Capabilities</h2>
+        <p className="text-sm text-muted mt-1 mb-6">
+          How each tier performs across all evaluation dimensions
+        </p>
+        <ResponsiveContainer width="100%" height={380}>
+          <RechartsRadarChart data={radarData} margin={{ top: 20, right: 30, bottom: 20, left: 30 }}>
+            <PolarGrid stroke="var(--border)" />
+            <PolarAngleAxis
+              dataKey="metric"
+              tick={{ fill: 'var(--text-muted)', fontSize: 12, fontWeight: 500 }}
+            />
+            <PolarRadiusAxis
+              angle={90}
+              domain={[0, 100]}
+              tick={{ fill: 'var(--text-muted)', fontSize: 10 }}
+              tickCount={4}
+            />
+            {clusterNames.map((cn) => (
+              <Radar
+                key={cn}
+                name={`${cn} (${clusterCounts[cn] ?? 0})`}
+                dataKey={cn}
+                stroke={CLUSTER_COLORS[cn]}
+                fill={CLUSTER_COLORS[cn]}
+                fillOpacity={0.10}
+                strokeWidth={2}
+              />
+            ))}
+            <Legend
+              formatter={(value) => (
+                <span className="text-primary text-xs">{value}</span>
+              )}
+            />
+            <Tooltip
+              contentStyle={{
+                backgroundColor: 'var(--bg-card)',
+                border: '1px solid var(--border)',
+                color: 'var(--text-primary)',
+              }}
+            />
+          </RechartsRadarChart>
+        </ResponsiveContainer>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4">
+          {clusterNames.map((cn) => {
+            const cc = CLUSTER_CARD_CLASSES[cn] ?? { border: 'border-border', bg: 'bg-card', text: 'text-primary' }
+            return (
+              <div key={cn} className={`rounded-lg p-3 border ${cc.border} ${cc.bg}`}>
+                <div className={`text-xs font-bold ${cc.text}`}>{cn}</div>
+                <div className="text-lg font-mono font-bold text-primary mt-1">{clusterCounts[cn] ?? 0}</div>
+                <div className="text-xs text-muted">models</div>
+              </div>
+            )
+          })}
         </div>
-        <ClusterScatter models={modelsData} height={480} />
       </div>
 
       {/* ── Cluster Profile Cards ── */}
