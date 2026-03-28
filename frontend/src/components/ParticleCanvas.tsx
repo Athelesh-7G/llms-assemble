@@ -1,8 +1,8 @@
 import { useEffect, useRef } from "react"
 
 const COLORS = ["#E63946", "#457B9D", "#2A9D8F", "#E9C46A"]
-const PARTICLE_COUNT = 80
-const CONNECTION_DISTANCE = 120
+const PARTICLE_COUNT = 60
+const CONNECTION_DISTANCE = 140
 const MOUSE_REPEL_RADIUS = 100
 const MOUSE_REPEL_STRENGTH = 0.3
 
@@ -40,7 +40,7 @@ export default function ParticleCanvas() {
         y: Math.random() * canvas.height,
         vx: (Math.random() - 0.5) * 0.4,
         vy: (Math.random() - 0.5) * 0.4,
-        radius: Math.random() * 2 + 1,
+        radius: Math.random() * 4 + 3,
         color: COLORS[Math.floor(Math.random() * COLORS.length)],
         opacity: Math.random() * 0.5 + 0.2,
       }))
@@ -98,7 +98,7 @@ export default function ParticleCanvas() {
             ctx.moveTo(particles[i].x, particles[i].y)
             ctx.lineTo(particles[j].x, particles[j].y)
             ctx.strokeStyle = gradient
-            ctx.lineWidth = opacity * 2.5
+            ctx.lineWidth = opacity * 3.5
             ctx.stroke()
           }
         }
