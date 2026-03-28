@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { motion } from 'framer-motion'
 import { ChevronDown, ChevronUp, Download, Eye, EyeOff } from 'lucide-react'
 import ClusterBadge from '../components/ClusterBadge'
+import ModelLinks from '../components/ModelLinks'
 import { modelsData } from '../data/loader'
 import type { LLMModel } from '../types/index'
 
@@ -293,13 +294,16 @@ export default function ExplorerPage() {
                     </span>
                   </th>
                 ))}
+                <th className="text-xs text-muted uppercase px-4 py-3 whitespace-nowrap text-left">
+                  Links
+                </th>
               </tr>
             </thead>
             <tbody>
               {filteredRows.length === 0 ? (
                 <tr>
                   <td
-                    colSpan={visibleColDefs.length}
+                    colSpan={visibleColDefs.length + 1}
                     className="px-4 py-12 text-center text-muted text-sm"
                   >
                     No models match the current filters.
@@ -357,6 +361,9 @@ export default function ExplorerPage() {
                         </td>
                       )
                     })}
+                    <td className="px-4 py-2.5">
+                      <ModelLinks modelName={m.model_name} size="sm" />
+                    </td>
                   </tr>
                 ))
               )}

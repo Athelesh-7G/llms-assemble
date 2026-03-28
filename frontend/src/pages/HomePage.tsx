@@ -21,6 +21,7 @@ import {
 import { BarChart } from '../components/charts'
 import ClusterBadge from '../components/ClusterBadge'
 import MetricBar from '../components/MetricBar'
+import ModelLinks from '../components/ModelLinks'
 import {
   clustersData,
   getClusterColor,
@@ -298,6 +299,11 @@ export default function HomePage() {
             <div className="text-sm font-bold text-primary leading-tight">{bestCoding?.model_name ?? '—'}</div>
             <div className="mt-2"><ClusterBadge label={bestCoding?.cluster_label ?? ''} size="sm" /></div>
             <div className="text-xs text-muted mt-2 font-mono">HumanEval {bestCoding?.humaneval_score.toFixed(1)}</div>
+            {bestCoding && (
+              <div className="mt-3 pt-3 border-t border-border">
+                <ModelLinks modelName={bestCoding.model_name} size="sm" />
+              </div>
+            )}
           </motion.div>
 
           <motion.div className="bg-card border border-border border-t-[3px] border-t-[#2A9D8F] rounded-xl p-4" whileHover={{ scale: 1.02 }} transition={{ duration: 0.15 }}>
@@ -308,6 +314,11 @@ export default function HomePage() {
             <div className="text-sm font-bold text-primary leading-tight">{bestValue?.model_name ?? '—'}</div>
             <div className="mt-2"><ClusterBadge label={bestValue?.cluster_label ?? ''} size="sm" /></div>
             <div className="text-xs text-muted mt-2 font-mono">Efficiency ×{bestValue?.cost_efficiency_ratio.toFixed(2)}</div>
+            {bestValue && (
+              <div className="mt-3 pt-3 border-t border-border">
+                <ModelLinks modelName={bestValue.model_name} size="sm" />
+              </div>
+            )}
           </motion.div>
 
           <motion.div className="bg-card border border-border border-t-[3px] border-t-[#E9C46A] rounded-xl p-4" whileHover={{ scale: 1.02 }} transition={{ duration: 0.15 }}>
@@ -318,6 +329,11 @@ export default function HomePage() {
             <div className="text-sm font-bold text-primary leading-tight">{fastest?.model_name ?? '—'}</div>
             <div className="mt-2"><ClusterBadge label={fastest?.cluster_label ?? ''} size="sm" /></div>
             <div className="text-xs text-muted mt-2 font-mono">{fastest?.tokens_per_second.toFixed(0)} tok/s</div>
+            {fastest && (
+              <div className="mt-3 pt-3 border-t border-border">
+                <ModelLinks modelName={fastest.model_name} size="sm" />
+              </div>
+            )}
           </motion.div>
 
           <motion.div className="bg-card border border-border border-t-[3px] border-t-[#E63946] rounded-xl p-4" whileHover={{ scale: 1.02 }} transition={{ duration: 0.15 }}>
@@ -328,6 +344,11 @@ export default function HomePage() {
             <div className="text-sm font-bold text-primary leading-tight">{mostEfficient?.model_name ?? '—'}</div>
             <div className="mt-2"><ClusterBadge label={mostEfficient?.cluster_label ?? ''} size="sm" /></div>
             <div className="text-xs text-muted mt-2 font-mono">Score {mostEfficient?.efficiency_score.toFixed(3)}</div>
+            {mostEfficient && (
+              <div className="mt-3 pt-3 border-t border-border">
+                <ModelLinks modelName={mostEfficient.model_name} size="sm" />
+              </div>
+            )}
           </motion.div>
         </div>
       </section>

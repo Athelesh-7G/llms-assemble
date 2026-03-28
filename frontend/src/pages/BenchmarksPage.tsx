@@ -11,6 +11,7 @@ import {
 } from 'recharts'
 import { BarChart } from '../components/charts'
 import ClusterBadge from '../components/ClusterBadge'
+import ModelLinks from '../components/ModelLinks'
 import { getClusterColor, modelsData } from '../data/loader'
 import type { LLMModel } from '../types/index'
 
@@ -291,6 +292,9 @@ export default function BenchmarksPage() {
                     )}
                   </th>
                 ))}
+                <th className="text-left text-xs text-muted uppercase px-4 py-3 whitespace-nowrap">
+                  Links
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -323,6 +327,9 @@ export default function BenchmarksPage() {
                       </td>
                     )
                   })}
+                  <td className="px-4 py-2.5">
+                    <ModelLinks modelName={m.model_name} size="sm" />
+                  </td>
                 </tr>
               ))}
             </tbody>

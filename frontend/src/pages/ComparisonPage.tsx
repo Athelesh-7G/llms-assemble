@@ -4,6 +4,7 @@ import { GitCompare, Search, X } from 'lucide-react'
 import { RadarChart } from '../components/charts'
 import ClusterBadge from '../components/ClusterBadge'
 import MetricBar from '../components/MetricBar'
+import ModelLinks from '../components/ModelLinks'
 import { getClusterColor, getTopNByProfile, modelsData } from '../data/loader'
 import type { LLMModel } from '../types/index'
 
@@ -235,6 +236,9 @@ export default function ComparisonPage() {
                     <span className="text-xs text-primary font-mono">{v}</span>
                   </div>
                 ))}
+              </div>
+              <div className="mt-4 pt-3 border-t border-border">
+                <ModelLinks modelName={m.model_name} size="sm" />
               </div>
             </motion.div>
           ))}

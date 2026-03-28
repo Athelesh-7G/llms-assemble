@@ -12,6 +12,7 @@ import {
 import { SensitivityHeatmap } from '../components/charts'
 import ClusterBadge from '../components/ClusterBadge'
 import MetricBar from '../components/MetricBar'
+import ModelLinks from '../components/ModelLinks'
 import { getClusterColor, modelsData } from '../data/loader'
 import type { LLMModel } from '../types/index'
 
@@ -410,6 +411,10 @@ export default function RankingPage() {
                   <span className="text-xs bg-border px-2 py-0.5 rounded text-faint mt-2 inline-block">
                     {selectedModel.data_quality}
                   </span>
+                  <div className="mt-3">
+                    <p className="text-xs text-muted uppercase tracking-wider mb-2">Quick Links</p>
+                    <ModelLinks modelName={selectedModel.model_name} size="md" />
+                  </div>
                 </div>
                 <button
                   type="button"
