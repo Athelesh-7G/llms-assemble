@@ -10,8 +10,7 @@ import type { LLMModel } from '../types/index'
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
-const DAYS_PER_MONTH = 30
-const OSS_FALLBACK_COST = 0.80 // $/1M tokens estimated hosting cost if no effective_cost_per_1m
+const OSS_FALLBACK_COST = 0.80 // $/1M tokens estimated hosting cost
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -21,29 +20,6 @@ function formatCost(cost: number): string {
   if (cost < 1000) return `$${cost.toFixed(0)}`
   if (cost < 10000) return `$${(cost / 1000).toFixed(1)}K`
   return `$${(cost / 1000).toFixed(0)}K`
-}
-
-function computeMonthlyCostFor(
-  model: LLMModel,
-  dailyRequests: number,
-  avgInputTokens: number,
-  avgOutputTokens: number,
-): number {
-  const totalTokens = dailyRequests * (avgInputTokens + avgOutputTokens) * DAYS_PER_MONTH
-  if (model.is_open_source) {
-    const effectiveCost = model.effective_cost_per_1m > 0 ? model.effective_cost_per_1m : OSS_FALLBACK_COST
-    return (totalTokens / 1_000_000) * effectiveCost
-  }
-  const safeInputCost  = isNaN(model.cost_input_per_1m)  || model.cost_input_per_1m  < 0 ? 0 : model.cost_input_per_1m
-  const safeOutputCost = isNaN(model.cost_output_per_1m) || model.cost_output_per_1m < 0 ? 0 : model.cost_output_per_1m
-  if (safeInputCost === 0 && safeOutputCost === 0) {
-    const effectiveCost = model.effective_cost_per_1m > 0 ? model.effective_cost_per_1m : OSS_FALLBACK_COST
-    return (totalTokens / 1_000_000) * effectiveCost
-  }
-  const outputRate = safeOutputCost > 0 ? safeOutputCost : safeInputCost * 3
-  const inputCost  = (dailyRequests * avgInputTokens  * DAYS_PER_MONTH / 1_000_000) * safeInputCost
-  const outputCost = (dailyRequests * avgOutputTokens * DAYS_PER_MONTH / 1_000_000) * outputRate
-  return inputCost + outputCost
 }
 
 // ── Slider + presets ──────────────────────────────────────────────────────────
@@ -108,13 +84,40 @@ export default function CostPage() {
   const [highlightedModel, setHighlightedModel] = useState<string | null>(null)
   const [budgetLimit, setBudgetLimit]         = useState(0)
 
-  const totalMonthlyTokens = dailyRequests * (avgInputTokens + avgOutputTokens) * DAYS_PER_MONTH
+  const totalMonthlyTokens = dailyRequests * (avgInputTokens + avgOutputTokens) * 30
+
+  // Defined inside component so it closes over current slider state
+  function computeMonthlyCost(model: LLMModel): number {
+    const days = 30
+    const totalInputTokens  = dailyRequests * avgInputTokens  * days
+    const totalOutputTokens = dailyRequests * avgOutputTokens * days
+
+    const inputRate  = Number(model.cost_input_per_1m  ?? 0)
+    const outputRate = Number(model.cost_output_per_1m ?? 0)
+    const isOSS      = model.is_open_source === true
+    const effective  = Number(model.effective_cost_per_1m ?? 0)
+
+    if (isOSS) {
+      const rate = effective > 0 ? effective : OSS_FALLBACK_COST
+      return ((totalInputTokens + totalOutputTokens) / 1_000_000) * rate
+    }
+
+    if (inputRate === 0 && outputRate === 0) {
+      const rate = effective > 0 ? effective : OSS_FALLBACK_COST
+      return ((totalInputTokens + totalOutputTokens) / 1_000_000) * rate
+    }
+
+    const outRate    = outputRate > 0 ? outputRate : inputRate * 3
+    const inputCost  = (totalInputTokens  / 1_000_000) * inputRate
+    const outputCost = (totalOutputTokens / 1_000_000) * outRate
+    return inputCost + outputCost
+  }
 
   const computedData = useMemo(() => {
     return modelsData
       .filter((m) => !showOSSOnly || m.is_open_source)
       .map((m) => {
-        const monthlyCost = computeMonthlyCostFor(m, dailyRequests, avgInputTokens, avgOutputTokens)
+        const monthlyCost = computeMonthlyCost(m)
         return {
           model: m,
           monthlyCost,
@@ -130,6 +133,7 @@ export default function CostPage() {
         if (sortBy === 'value')      return b.valueScore - a.valueScore
         return 0
       })
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dailyRequests, avgInputTokens, avgOutputTokens, showOSSOnly, sortBy, budgetLimit])
 
   const maxCost          = Math.max(...computedData.map((d) => d.monthlyCost), 1)
@@ -141,14 +145,26 @@ export default function CostPage() {
     .sort((a, b) => b.model.capability_score - a.model.capability_score)[0]
 
   function getCostBreakdown(m: LLMModel) {
-    const daily   = computeMonthlyCostFor(m, dailyRequests, avgInputTokens, avgOutputTokens) / DAYS_PER_MONTH
+    const monthly = computeMonthlyCost(m)
+    const daily   = monthly / 30
     const weekly  = daily * 7
-    const monthly = daily * DAYS_PER_MONTH
     return { daily, weekly, monthly }
   }
 
   function getAtScale(m: LLMModel, reqs: number) {
-    return computeMonthlyCostFor(m, reqs, avgInputTokens, avgOutputTokens)
+    // Temporarily override dailyRequests via a direct calculation
+    const days = 30
+    const totalIn  = reqs * avgInputTokens  * days
+    const totalOut = reqs * avgOutputTokens * days
+    const inputRate  = Number(m.cost_input_per_1m  ?? 0)
+    const outputRate = Number(m.cost_output_per_1m ?? 0)
+    const effective  = Number(m.effective_cost_per_1m ?? 0)
+    if (m.is_open_source === true || (inputRate === 0 && outputRate === 0)) {
+      const rate = effective > 0 ? effective : OSS_FALLBACK_COST
+      return ((totalIn + totalOut) / 1_000_000) * rate
+    }
+    const outRate = outputRate > 0 ? outputRate : inputRate * 3
+    return (totalIn / 1_000_000) * inputRate + (totalOut / 1_000_000) * outRate
   }
 
   return (
