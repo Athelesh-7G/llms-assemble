@@ -1,60 +1,128 @@
 import { useMemo, useState } from 'react'
 import { motion } from 'framer-motion'
-import { Calculator, CheckCircle, DollarSign, TrendingUp, Trophy } from 'lucide-react'
-import ClusterBadge from '../components/ClusterBadge'
-import MetricBar from '../components/MetricBar'
+import {
+  Calculator,
+  CheckCircle,
+  DollarSign,
+  TrendingUp,
+  Trophy,
+} from 'lucide-react'
 import ModelLinks from '../components/ModelLinks'
-import StatCard from '../components/StatCard'
-import { getClusterColor, modelsData } from '../data/loader'
+import { modelsData } from '../data/loader'
 import type { LLMModel } from '../types/index'
 
-// ── Constants ─────────────────────────────────────────────────────────────────
+// ── Cost computation ──────────────────────────────────────────────────────────
+// Confirmed field names from models.json / LLMModel type:
+//   cost_input_per_1m     : number  (e.g. 5.0, 0.15, 10.0)
+//   cost_output_per_1m    : number  (e.g. 15.0, 0.6, 30.0)
+//   effective_cost_per_1m : number  (blended rate, e.g. 10.0, 0.375)
+//   is_open_source        : boolean
+//   capability_score      : number  (0–1 range)
+//   cluster_label         : 'Frontier'|'Balanced'|'Efficient'|'Lightweight'
 
-const OSS_FALLBACK_COST = 0.80 // $/1M tokens estimated hosting cost
+function getCost(
+  m: LLMModel,
+  dailyReq: number,
+  inTok: number,
+  outTok: number,
+): number {
+  const DAYS     = 30
+  const totalIn  = dailyReq * inTok  * DAYS
+  const totalOut = dailyReq * outTok * DAYS
+  const totalAll = totalIn + totalOut
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
+  const costIn  = m.cost_input_per_1m      ?? 0
+  const costOut = m.cost_output_per_1m     ?? 0
+  const costEff = m.effective_cost_per_1m  ?? 0
+  const isOSS   = m.is_open_source === true
 
-function formatCost(cost: number): string {
-  if (cost < 0.01) return '<$0.01'
-  if (cost < 1)    return `$${cost.toFixed(2)}`
-  if (cost < 1000) return `$${cost.toFixed(0)}`
-  if (cost < 10000) return `$${(cost / 1000).toFixed(1)}K`
-  return `$${(cost / 1000).toFixed(0)}K`
+  if (isOSS) {
+    const rate = costEff > 0 ? costEff : costIn > 0 ? costIn : 0.80
+    return (totalAll / 1_000_000) * rate
+  }
+  if (costIn > 0 && costOut > 0) {
+    return (totalIn / 1_000_000) * costIn + (totalOut / 1_000_000) * costOut
+  }
+  if (costIn > 0) {
+    return (totalIn / 1_000_000) * costIn + (totalOut / 1_000_000) * (costIn * 3)
+  }
+  if (costEff > 0) return (totalAll / 1_000_000) * costEff
+  return 0
 }
 
-// ── Slider + presets ──────────────────────────────────────────────────────────
+// ── Format helpers ────────────────────────────────────────────────────────────
 
-interface SliderControlProps {
+function fmt(cost: number): string {
+  if (cost <= 0)      return '$0.00'
+  if (cost < 0.01)    return '< $0.01'
+  if (cost < 1)       return `$${cost.toFixed(2)}`
+  if (cost < 1000)    return `$${Math.round(cost)}`
+  if (cost < 10000)   return `$${(cost / 1000).toFixed(1)}K`
+  if (cost < 1000000) return `$${Math.round(cost / 1000)}K`
+  return `$${(cost / 1000000).toFixed(1)}M`
+}
+
+function fmtRate(rate: number): string {
+  if (!rate || rate <= 0) return '–'
+  return `$${rate.toFixed(3)}`
+}
+
+function fmtTokens(t: number): string {
+  if (t >= 1_000_000_000) return `${(t / 1_000_000_000).toFixed(1)}B`
+  if (t >= 1_000_000)     return `${(t / 1_000_000).toFixed(1)}M`
+  return `${(t / 1000).toFixed(0)}K`
+}
+
+// ── Slider color config (pre-computed Tailwind classes — no inline styles) ───
+
+type SliderColor = 'red' | 'blue' | 'teal' | 'gold'
+
+const SLIDER_COLORS: Record<SliderColor, {
+  badge:        string
+  accent:       string
+  activePreset: string
+}> = {
+  red:  { badge: 'bg-[#E63946]/[0.12] text-[#E63946]', accent: 'accent-[#E63946]', activePreset: 'border-[#E63946] text-[#E63946] font-bold' },
+  blue: { badge: 'bg-[#457B9D]/[0.12] text-[#457B9D]', accent: 'accent-[#457B9D]', activePreset: 'border-[#457B9D] text-[#457B9D] font-bold' },
+  teal: { badge: 'bg-[#2A9D8F]/[0.12] text-[#2A9D8F]', accent: 'accent-[#2A9D8F]', activePreset: 'border-[#2A9D8F] text-[#2A9D8F] font-bold' },
+  gold: { badge: 'bg-[#E9C46A]/[0.12] text-[#E9C46A]', accent: 'accent-[#E9C46A]', activePreset: 'border-[#E9C46A] text-[#E9C46A] font-bold' },
+}
+
+// ── Slider component ──────────────────────────────────────────────────────────
+
+interface SliderProps {
   label: string
   value: number
   min: number
   max: number
   step: number
-  color: string
-  badge: string
+  display: string
+  colorKey: SliderColor
   presets: { label: string; value: number }[]
   helper?: string
   onChange: (v: number) => void
 }
 
-function SliderControl({ label, value, min, max, step, color, badge, presets, helper, onChange }: SliderControlProps) {
+function Slider({
+  label, value, min, max, step, display,
+  colorKey, presets, helper, onChange,
+}: SliderProps) {
+  const cls = SLIDER_COLORS[colorKey]
   return (
     <div>
       <div className="flex items-center justify-between mb-2">
         <span className="text-sm font-medium text-primary">{label}</span>
-        <span className="text-xs font-mono font-bold px-2 py-0.5 rounded-md" style={{ backgroundColor: `${color}20`, color }}>
-          {badge}
+        <span className={`text-xs font-mono font-bold px-2 py-0.5 rounded ${cls.badge}`}>
+          {display}
         </span>
       </div>
       <input
         type="range"
-        min={min}
-        max={max}
-        step={step}
+        min={min} max={max} step={step}
         value={value}
+        aria-label={label}
         onChange={(e) => onChange(Number(e.target.value))}
-        className="w-full h-1.5 rounded-full appearance-none cursor-pointer bg-border"
-        style={{ accentColor: color }}
+        className={`w-full h-1.5 rounded-lg appearance-none cursor-pointer ${cls.accent}`}
       />
       <div className="flex gap-1 mt-2 flex-wrap">
         {presets.map((p) => (
@@ -62,268 +130,237 @@ function SliderControl({ label, value, min, max, step, color, badge, presets, he
             key={p.label}
             type="button"
             onClick={() => onChange(p.value)}
-            className="text-[10px] bg-border/50 rounded px-1.5 py-0.5 cursor-pointer hover:bg-[#E63946]/10 hover:text-[#E63946] text-muted transition-colors"
+            className={`text-[10px] px-2 py-0.5 rounded border transition-colors ${
+              value === p.value
+                ? cls.activePreset
+                : 'border-border text-muted hover:text-primary'
+            }`}
           >
             {p.label}
           </button>
         ))}
       </div>
-      {helper && <div className="text-[10px] text-muted mt-1">{helper}</div>}
+      {helper && <p className="text-[10px] text-muted mt-1">{helper}</p>}
     </div>
   )
+}
+
+// ── KPI card config (pre-computed color classes — no inline styles) ───────────
+
+interface KpiCardConfig {
+  icon: React.ReactNode
+  label: string
+  value: string
+  sub: string
+  iconClass: string
 }
 
 // ── Page ──────────────────────────────────────────────────────────────────────
 
 export default function CostPage() {
-  const [dailyRequests, setDailyRequests]     = useState(1000)
-  const [avgInputTokens, setAvgInputTokens]   = useState(500)
+  const [dailyRequests,   setDailyRequests]   = useState(10000)
+  const [avgInputTokens,  setAvgInputTokens]  = useState(500)
   const [avgOutputTokens, setAvgOutputTokens] = useState(200)
-  const [showOSSOnly, setShowOSSOnly]         = useState(false)
-  const [sortBy, setSortBy]                   = useState<'cost' | 'capability' | 'value'>('cost')
-  const [highlightedModel, setHighlightedModel] = useState<string | null>(null)
-  const [budgetLimit, setBudgetLimit]         = useState(0)
+  const [budgetLimit,     setBudgetLimit]     = useState(0)
+  const [showOSSOnly,     setShowOSSOnly]     = useState(false)
+  const [sortBy,          setSortBy]          = useState<'cost' | 'capability' | 'value'>('cost')
 
-  const totalMonthlyTokens = dailyRequests * (avgInputTokens + avgOutputTokens) * 30
-
-  // Defined inside component so it closes over current slider state
-  function computeMonthlyCost(model: LLMModel): number {
-    const days = 30
-    const totalInputTokens  = dailyRequests * avgInputTokens  * days
-    const totalOutputTokens = dailyRequests * avgOutputTokens * days
-
-    const inputRate  = Number(model.cost_input_per_1m  ?? 0)
-    const outputRate = Number(model.cost_output_per_1m ?? 0)
-    const isOSS      = model.is_open_source === true
-    const effective  = Number(model.effective_cost_per_1m ?? 0)
-
-    if (isOSS) {
-      const rate = effective > 0 ? effective : OSS_FALLBACK_COST
-      return ((totalInputTokens + totalOutputTokens) / 1_000_000) * rate
-    }
-
-    if (inputRate === 0 && outputRate === 0) {
-      const rate = effective > 0 ? effective : OSS_FALLBACK_COST
-      return ((totalInputTokens + totalOutputTokens) / 1_000_000) * rate
-    }
-
-    const outRate    = outputRate > 0 ? outputRate : inputRate * 3
-    const inputCost  = (totalInputTokens  / 1_000_000) * inputRate
-    const outputCost = (totalOutputTokens / 1_000_000) * outRate
-    return inputCost + outputCost
-  }
+  const totalTokens = dailyRequests * (avgInputTokens + avgOutputTokens) * 30
 
   const computedData = useMemo(() => {
-    return modelsData
-      .filter((m) => !showOSSOnly || m.is_open_source)
+    const filtered = showOSSOnly
+      ? modelsData.filter((m) => m.is_open_source === true)
+      : modelsData
+
+    return filtered
       .map((m) => {
-        const monthlyCost = computeMonthlyCost(m)
-        return {
-          model: m,
-          monthlyCost,
-          withinBudget: budgetLimit === 0 || monthlyCost <= budgetLimit,
-          valueScore: monthlyCost > 0.001
-            ? (m.capability_score * 1000) / monthlyCost
-            : m.capability_score * 1000,
-        }
+        const monthly  = getCost(m, dailyRequests, avgInputTokens, avgOutputTokens)
+        const capScore = m.capability_score ?? 0
+        const within   = budgetLimit === 0 || monthly <= budgetLimit
+        const value    = monthly > 0.001
+          ? (capScore * 10000) / monthly
+          : capScore * 10000
+        return { m, monthly, within, value, capScore }
       })
       .sort((a, b) => {
-        if (sortBy === 'cost')       return a.monthlyCost - b.monthlyCost
-        if (sortBy === 'capability') return b.model.capability_score - a.model.capability_score
-        if (sortBy === 'value')      return b.valueScore - a.valueScore
+        if (sortBy === 'cost')       return a.monthly - b.monthly
+        if (sortBy === 'capability') return b.capScore - a.capScore
+        if (sortBy === 'value')      return b.value - a.value
         return 0
       })
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dailyRequests, avgInputTokens, avgOutputTokens, showOSSOnly, sortBy, budgetLimit])
+  }, [dailyRequests, avgInputTokens, avgOutputTokens, budgetLimit, showOSSOnly, sortBy])
 
-  const maxCost          = Math.max(...computedData.map((d) => d.monthlyCost), 1)
-  const cheapestModel    = [...computedData].sort((a, b) => a.monthlyCost - b.monthlyCost)[0]
-  const bestValueModel   = [...computedData].sort((a, b) => b.valueScore - a.valueScore)[0]
-  const withinBudgetCount = computedData.filter((d) => d.withinBudget).length
-  const bestInBudget     = computedData
-    .filter((d) => d.withinBudget)
-    .sort((a, b) => b.model.capability_score - a.model.capability_score)[0]
+  const cheapest     = [...computedData].sort((a, b) => a.monthly - b.monthly)[0]
+  const bestValue    = [...computedData].sort((a, b) => b.value - a.value)[0]
+  const withinBudget = computedData.filter((d) => d.within)
+  const bestInBudget = [...withinBudget].sort((a, b) => b.capScore - a.capScore)[0]
+  const withinCount  = withinBudget.length
 
-  function getCostBreakdown(m: LLMModel) {
-    const monthly = computeMonthlyCost(m)
-    const daily   = monthly / 30
-    const weekly  = daily * 7
-    return { daily, weekly, monthly }
-  }
-
-  function getAtScale(m: LLMModel, reqs: number) {
-    // Temporarily override dailyRequests via a direct calculation
-    const days = 30
-    const totalIn  = reqs * avgInputTokens  * days
-    const totalOut = reqs * avgOutputTokens * days
-    const inputRate  = Number(m.cost_input_per_1m  ?? 0)
-    const outputRate = Number(m.cost_output_per_1m ?? 0)
-    const effective  = Number(m.effective_cost_per_1m ?? 0)
-    if (m.is_open_source === true || (inputRate === 0 && outputRate === 0)) {
-      const rate = effective > 0 ? effective : OSS_FALLBACK_COST
-      return ((totalIn + totalOut) / 1_000_000) * rate
-    }
-    const outRate = outputRate > 0 ? outputRate : inputRate * 3
-    return (totalIn / 1_000_000) * inputRate + (totalOut / 1_000_000) * outRate
-  }
+  const kpiCards: KpiCardConfig[] = [
+    {
+      icon: <DollarSign size={20} />,
+      label: 'Cheapest Option',
+      value: cheapest?.m.model_name ?? '–',
+      sub: cheapest ? fmt(cheapest.monthly) + '/month' : '–',
+      iconClass: 'text-[#2A9D8F]',
+    },
+    {
+      icon: <TrendingUp size={20} />,
+      label: 'Best Value',
+      value: bestValue?.m.model_name ?? '–',
+      sub: 'Best capability per dollar',
+      iconClass: 'text-[#E9C46A]',
+    },
+    {
+      icon: <CheckCircle size={20} />,
+      label: 'Within Budget',
+      value: String(withinCount),
+      sub: `of ${computedData.length} models`,
+      iconClass: 'text-[#457B9D]',
+    },
+    {
+      icon: <Trophy size={20} />,
+      label: 'Best in Budget',
+      value: bestInBudget?.m.model_name ?? (budgetLimit === 0 ? 'Set a budget' : 'None'),
+      sub: budgetLimit === 0 ? 'Set a budget limit above' : 'Highest capability',
+      iconClass: 'text-[#E63946]',
+    },
+  ]
 
   return (
     <motion.div
+      className="max-w-6xl mx-auto px-4 sm:px-6"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
-      className="max-w-6xl mx-auto px-4 sm:px-6"
     >
-      {/* Header */}
+      {/* ── Header ── */}
       <div className="mb-6 flex items-center gap-3">
-        <Calculator size={22} className="text-[#E63946]" />
+        <div className="p-2 rounded-xl bg-[#E63946]/10">
+          <Calculator className="text-[#E63946]" size={24} />
+        </div>
         <div>
           <h1 className="text-2xl font-bold text-primary">API Cost Calculator</h1>
           <p className="text-sm text-muted mt-0.5">
-            Calculate your exact monthly API spend across all {modelsData.length} models for your usage pattern
+            Calculate your exact monthly API spend across all {modelsData.length} models
           </p>
         </div>
       </div>
 
-      {/* ── Section 1: Controls ── */}
+      {/* ── Sliders ── */}
       <div className="bg-card border border-border rounded-2xl p-6 mb-6">
-        <div className="mb-6">
-          <div className="text-lg font-semibold text-primary">Your Usage</div>
-          <div className="text-xs text-muted mt-0.5">Adjust sliders to match your expected API usage</div>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          <SliderControl
+        <h2 className="text-base font-semibold text-primary mb-1">Your Usage</h2>
+        <p className="text-xs text-muted mb-6">Adjust to match your expected API usage pattern</p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          <Slider
             label="Daily API Requests"
             value={dailyRequests}
-            min={100}
-            max={1000000}
-            step={100}
-            color="#E63946"
-            badge={dailyRequests.toLocaleString()}
-            presets={[
-              { label: '100', value: 100 },
-              { label: '1K', value: 1000 },
-              { label: '10K', value: 10000 },
-              { label: '100K', value: 100000 },
-              { label: '1M', value: 1000000 },
-            ]}
+            min={100} max={1000000} step={100}
+            display={dailyRequests >= 1000 ? `${(dailyRequests / 1000).toFixed(0)}K` : String(dailyRequests)}
+            colorKey="red"
             onChange={setDailyRequests}
+            presets={[
+              { label: '100',  value: 100 },
+              { label: '1K',   value: 1000 },
+              { label: '10K',  value: 10000 },
+              { label: '100K', value: 100000 },
+              { label: '1M',   value: 1000000 },
+            ]}
           />
-          <SliderControl
+          <Slider
             label="Avg Input Tokens"
             value={avgInputTokens}
-            min={50}
-            max={100000}
-            step={50}
-            color="#457B9D"
-            badge={avgInputTokens.toLocaleString()}
-            presets={[
-              { label: '128', value: 128 },
-              { label: '500', value: 500 },
-              { label: '2K', value: 2000 },
-              { label: '8K', value: 8000 },
-              { label: '32K', value: 32000 },
-            ]}
-            helper={`~${Math.round(avgInputTokens / 750)} pages`}
+            min={50} max={100000} step={50}
+            display={avgInputTokens >= 1000 ? `${(avgInputTokens / 1000).toFixed(0)}K` : String(avgInputTokens)}
+            colorKey="blue"
             onChange={setAvgInputTokens}
+            helper={`~${Math.round(avgInputTokens / 750)} pages`}
+            presets={[
+              { label: '128',  value: 128 },
+              { label: '500',  value: 500 },
+              { label: '2K',   value: 2000 },
+              { label: '8K',   value: 8000 },
+              { label: '32K',  value: 32000 },
+            ]}
           />
-          <SliderControl
+          <Slider
             label="Avg Output Tokens"
             value={avgOutputTokens}
-            min={50}
-            max={8000}
-            step={50}
-            color="#2A9D8F"
-            badge={avgOutputTokens.toLocaleString()}
+            min={50} max={8000} step={50}
+            display={String(avgOutputTokens)}
+            colorKey="teal"
+            onChange={setAvgOutputTokens}
             presets={[
               { label: '100', value: 100 },
               { label: '200', value: 200 },
               { label: '500', value: 500 },
-              { label: '1K', value: 1000 },
-              { label: '4K', value: 4000 },
+              { label: '1K',  value: 1000 },
+              { label: '4K',  value: 4000 },
             ]}
-            onChange={setAvgOutputTokens}
           />
-          <SliderControl
-            label="Budget Limit"
+          <Slider
+            label="Monthly Budget"
             value={budgetLimit}
-            min={0}
-            max={10000}
-            step={10}
-            color="#E9C46A"
-            badge={budgetLimit === 0 ? 'No Limit' : `$${budgetLimit.toLocaleString()}`}
+            min={0} max={10000} step={10}
+            display={budgetLimit === 0 ? 'No Limit' : `$${budgetLimit}`}
+            colorKey="gold"
+            onChange={setBudgetLimit}
+            helper="Models over budget shown in red"
             presets={[
               { label: 'No Limit', value: 0 },
-              { label: '$50', value: 50 },
-              { label: '$200', value: 200 },
-              { label: '$500', value: 500 },
-              { label: '$2K', value: 2000 },
+              { label: '$50',      value: 50 },
+              { label: '$200',     value: 200 },
+              { label: '$500',     value: 500 },
+              { label: '$2K',      value: 2000 },
             ]}
-            helper="Models over budget shown in red"
-            onChange={setBudgetLimit}
           />
         </div>
 
-        <div className="mt-5 bg-border/20 rounded-lg px-4 py-2.5 text-xs text-muted text-center">
-          Total monthly tokens:{' '}
-          <span className="font-mono font-semibold text-primary">
-            {totalMonthlyTokens >= 1_000_000_000
-              ? `${(totalMonthlyTokens / 1_000_000_000).toFixed(1)}B`
-              : `${(totalMonthlyTokens / 1_000_000).toFixed(1)}M`}
+        {/* Token summary */}
+        <div className="mt-6 bg-border/20 rounded-lg px-4 py-2.5 text-center">
+          <span className="text-xs text-muted">
+            Total monthly tokens:{' '}
+            <span className="font-mono font-bold text-primary">
+              {fmtTokens(totalTokens)}
+            </span>
+            {' '}({dailyRequests.toLocaleString()} req/day × {(avgInputTokens + avgOutputTokens).toLocaleString()} tokens avg)
           </span>
-          {' '}({dailyRequests.toLocaleString()} req/day ×{' '}
-          {(avgInputTokens + avgOutputTokens).toLocaleString()} tokens avg)
         </div>
       </div>
 
-      {/* ── Section 2: KPI Cards ── */}
+      {/* ── KPI Cards ── */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <StatCard
-          icon={<DollarSign size={18} />}
-          value={cheapestModel?.model.model_name ?? '—'}
-          label="Cheapest Option"
-          color="#2A9D8F"
-          subtitle={formatCost(cheapestModel?.monthlyCost ?? 0) + '/month'}
-        />
-        <StatCard
-          icon={<TrendingUp size={18} />}
-          value={bestValueModel?.model.model_name ?? '—'}
-          label="Best Value"
-          color="#E9C46A"
-          subtitle="Best capability per dollar"
-        />
-        <StatCard
-          icon={<CheckCircle size={18} />}
-          value={withinBudgetCount}
-          label="Within Budget"
-          color="#457B9D"
-          animateCount
-          subtitle={`of ${computedData.length} models`}
-        />
-        <StatCard
-          icon={<Trophy size={18} />}
-          value={bestInBudget?.model.model_name ?? 'None'}
-          label="Best in Budget"
-          color="#E63946"
-          subtitle="Highest benchmark scores"
-        />
+        {kpiCards.map((card) => (
+          <div key={card.label} className="bg-card border border-border rounded-xl p-4">
+            <div className={`flex items-center gap-2 mb-3 ${card.iconClass}`}>
+              {card.icon}
+              <span className="text-xs font-medium text-muted">{card.label}</span>
+            </div>
+            <div
+              className="text-lg font-bold text-primary leading-tight truncate"
+              title={card.value}
+            >
+              {card.value}
+            </div>
+            <div className="text-xs text-muted mt-1">{card.sub}</div>
+          </div>
+        ))}
       </div>
 
-      {/* ── Section 3: Filters ── */}
-      <div className="flex flex-wrap gap-3 items-center mb-4">
+      {/* ── Sort + Filter row ── */}
+      <div className="flex flex-wrap items-center gap-3 mb-4">
         {(['cost', 'capability', 'value'] as const).map((s) => (
           <button
             key={s}
             type="button"
             onClick={() => setSortBy(s)}
-            className={`px-4 py-1.5 rounded-lg text-sm border transition-colors capitalize ${
+            className={`px-4 py-1.5 rounded-lg text-sm border transition-colors ${
               sortBy === s
-                ? 'bg-[#E63946]/10 text-[#E63946] border-[#E63946]/30'
+                ? 'bg-[#E63946]/10 text-[#E63946] border-[#E63946]/30 font-semibold'
                 : 'bg-card border-border text-muted hover:text-primary'
             }`}
           >
-            Sort by {s === 'cost' ? 'Cost' : s === 'capability' ? 'Capability' : 'Value'}
+            Sort by {s.charAt(0).toUpperCase() + s.slice(1)}
           </button>
         ))}
 
@@ -331,8 +368,10 @@ export default function CostPage() {
           <span className="text-sm text-muted">Open Source only</span>
           <button
             type="button"
+            title="Toggle Open Source only"
+            aria-label={`Open Source only: ${showOSSOnly ? 'on' : 'off'}`}
             onClick={() => setShowOSSOnly((v) => !v)}
-            className={`relative w-10 h-6 rounded-full transition-colors duration-200 ${
+            className={`w-10 h-6 rounded-full relative cursor-pointer transition-colors duration-200 ${
               showOSSOnly ? 'bg-[#2A9D8F]' : 'bg-border'
             }`}
           >
@@ -343,144 +382,102 @@ export default function CostPage() {
         </div>
       </div>
 
-      {/* ── Section 4: Table ── */}
-      <div className="bg-card border border-border rounded-2xl overflow-hidden mb-6">
-        <div className="overflow-x-auto max-h-[600px] overflow-y-auto">
-          <table className="w-full text-sm">
-            <thead className="sticky top-0 bg-card z-10 border-b border-border">
-              <tr>
-                {['Model', 'Cluster', 'Monthly Cost', 'Cost Bar', 'Input/1M', 'Output/1M', 'Capability', 'Value Score'].map((h) => (
-                  <th key={h} className="text-left text-xs text-muted uppercase px-4 py-3 whitespace-nowrap">
+      {/* ── Table ── */}
+      <div className="bg-card border border-border rounded-2xl overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[700px]">
+            <thead>
+              <tr className="border-b border-border bg-border/30">
+                {['#', 'Model', 'Cluster', 'Monthly Cost', 'Input /1M', 'Output /1M', 'Capability', 'Links'].map((h) => (
+                  <th
+                    key={h}
+                    className="text-left text-xs font-semibold text-muted uppercase tracking-wider px-4 py-3"
+                  >
                     {h}
                   </th>
                 ))}
               </tr>
             </thead>
             <tbody>
-              {computedData.map(({ model: m, monthlyCost, withinBudget, valueScore }) => {
-                const isHighlighted = highlightedModel === m.model_name
-                const barWidth = Math.max((monthlyCost / maxCost) * 100, 1)
-                const clusterColor = getClusterColor(m.cluster_label)
-                const breakdown = isHighlighted ? getCostBreakdown(m) : null
-
+              {computedData.map(({ m, monthly, within, capScore }, idx) => {
+                const overBudget = budgetLimit > 0 && !within
                 return (
-                  <>
-                    <tr
-                      key={m.model_name}
-                      onClick={() => setHighlightedModel(isHighlighted ? null : m.model_name)}
-                      className={`border-b border-border/50 cursor-pointer transition-colors ${
-                        isHighlighted
-                          ? 'bg-[#E63946]/5'
-                          : withinBudget
-                          ? 'hover:bg-border/20'
-                          : 'bg-[#E63946]/3 hover:bg-[#E63946]/8'
-                      }`}
-                    >
-                      {/* Model name */}
-                      <td className="px-4 py-2.5 whitespace-nowrap">
-                        <div className="flex items-center gap-2">
-                          <span className={`text-sm font-medium ${withinBudget ? 'text-primary' : 'text-[#E63946]/70'}`}>
-                            {m.model_name}
+                  <tr
+                    key={m.model_name}
+                    className={`border-b border-border/50 transition-colors hover:bg-border/20 ${
+                      overBudget ? 'opacity-50' : ''
+                    }`}
+                  >
+                    {/* Rank */}
+                    <td className="px-4 py-3 text-xs text-muted font-mono">{idx + 1}</td>
+
+                    {/* Model name */}
+                    <td className="px-4 py-3">
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-medium text-primary whitespace-nowrap">
+                          {m.model_name}
+                        </span>
+                        {m.is_open_source && (
+                          <span className="text-[9px] px-1.5 py-0.5 bg-[#2A9D8F]/15 text-[#2A9D8F] rounded font-semibold">
+                            OSS
                           </span>
-                          {m.is_open_source && (
-                            <span className="text-[9px] font-semibold px-1.5 py-0.5 rounded bg-[#2A9D8F]/10 text-[#2A9D8F]">
-                              OSS
-                            </span>
-                          )}
-                        </div>
-                      </td>
-                      {/* Cluster */}
-                      <td className="px-4 py-2.5">
-                        <ClusterBadge label={m.cluster_label} size="sm" />
-                      </td>
-                      {/* Monthly Cost */}
-                      <td className="px-4 py-2.5 whitespace-nowrap">
-                        <div className={`text-sm font-mono font-bold ${withinBudget ? 'text-[#2A9D8F]' : 'text-[#E63946]'}`}>
-                          {formatCost(monthlyCost)}
-                        </div>
-                        {!withinBudget && (
-                          <div className="text-[9px] text-[#E63946] font-medium">over budget</div>
                         )}
-                      </td>
-                      {/* Cost bar */}
-                      <td className="px-4 py-2.5">
-                        <div className="w-24 bg-border/30 rounded-full h-2">
+                      </div>
+                    </td>
+
+                    {/* Cluster */}
+                    <td className="px-4 py-3">
+                      <span className="text-xs px-2 py-0.5 rounded-full bg-border/50 text-muted whitespace-nowrap">
+                        {m.cluster_label}
+                      </span>
+                    </td>
+
+                    {/* Monthly cost */}
+                    <td className="px-4 py-3">
+                      <div className={`font-mono font-bold text-sm ${overBudget ? 'text-[#E63946]' : 'text-[#2A9D8F]'}`}>
+                        {fmt(monthly)}
+                      </div>
+                      {overBudget && (
+                        <div className="text-[9px] text-[#E63946] font-semibold">over budget</div>
+                      )}
+                    </td>
+
+                    {/* Input rate */}
+                    <td className="px-4 py-3 font-mono text-xs text-muted">
+                      {m.is_open_source ? '~$0.80' : fmtRate(m.cost_input_per_1m)}
+                    </td>
+
+                    {/* Output rate */}
+                    <td className="px-4 py-3 font-mono text-xs text-muted">
+                      {m.is_open_source ? '~$0.80' : fmtRate(m.cost_output_per_1m)}
+                    </td>
+
+                    {/* Capability bar — width is per-row dynamic, inline style unavoidable */}
+                    <td className="px-4 py-3">
+                      <div className="flex items-center gap-2">
+                        <div className="flex-1 bg-border/30 rounded-full h-1.5 min-w-[60px]">
                           <div
-                            className="h-2 rounded-full transition-all duration-300"
-                            style={{ width: `${barWidth}%`, backgroundColor: clusterColor }}
+                            className="h-1.5 rounded-full bg-[#457B9D]"
+                            style={{ width: `${capScore * 100}%` }}
                           />
                         </div>
-                      </td>
-                      {/* Input/1M */}
-                      <td className="px-4 py-2.5 text-xs font-mono text-muted">
-                        {m.is_open_source ? '~$0.80' : `$${m.cost_input_per_1m.toFixed(3)}`}
-                      </td>
-                      {/* Output/1M */}
-                      <td className="px-4 py-2.5 text-xs font-mono text-muted">
-                        {m.is_open_source ? '~$0.80' : `$${m.cost_output_per_1m.toFixed(3)}`}
-                      </td>
-                      {/* Capability */}
-                      <td className="px-4 py-2.5">
-                        <div className="w-20">
-                          <MetricBar label="" value={m.capability_score} color={clusterColor} />
-                        </div>
-                      </td>
-                      {/* Value score */}
-                      <td className="px-4 py-2.5 text-xs font-mono text-muted">
-                        {valueScore > 100 ? '>100' : valueScore.toFixed(1)}
-                      </td>
-                    </tr>
+                        <span className="text-xs font-mono text-muted w-8 text-right">
+                          {(capScore * 100).toFixed(0)}%
+                        </span>
+                      </div>
+                    </td>
 
-                    {/* Expanded detail row */}
-                    {isHighlighted && breakdown && (
-                      <tr key={`${m.model_name}-expanded`} className="bg-card border-b border-border">
-                        <td colSpan={8} className="px-4 py-4">
-                          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                            {/* Cost breakdown */}
-                            <div className="bg-border/20 rounded-xl p-4">
-                              <div className="text-xs text-muted uppercase tracking-wider mb-3">Cost Breakdown</div>
-                              {[
-                                ['Daily',   breakdown.daily],
-                                ['Weekly',  breakdown.weekly],
-                                ['Monthly', breakdown.monthly],
-                              ].map(([label, val]) => (
-                                <div key={label as string} className="flex justify-between mb-1.5">
-                                  <span className="text-xs text-muted">{label as string}</span>
-                                  <span className="text-xs font-mono font-semibold text-primary">{formatCost(val as number)}</span>
-                                </div>
-                              ))}
-                            </div>
-                            {/* At scale */}
-                            <div className="bg-border/20 rounded-xl p-4">
-                              <div className="text-xs text-muted uppercase tracking-wider mb-3">At Scale (monthly)</div>
-                              {[
-                                ['10K req/day',  getAtScale(m, 10000)],
-                                ['100K req/day', getAtScale(m, 100000)],
-                                ['1M req/day',   getAtScale(m, 1000000)],
-                              ].map(([label, val]) => (
-                                <div key={label as string} className="flex justify-between mb-1.5">
-                                  <span className="text-xs text-muted">{label as string}</span>
-                                  <span className="text-xs font-mono font-semibold text-primary">{formatCost(val as number)}</span>
-                                </div>
-                              ))}
-                            </div>
-                            {/* Links */}
-                            <div className="bg-border/20 rounded-xl p-4">
-                              <div className="text-xs text-muted uppercase tracking-wider mb-3">Quick Actions</div>
-                              <ModelLinks modelName={m.model_name} size="sm" />
-                            </div>
-                          </div>
-                        </td>
-                      </tr>
-                    )}
-                  </>
+                    {/* Links */}
+                    <td className="px-4 py-3">
+                      <ModelLinks modelName={m.model_name} size="sm" />
+                    </td>
+                  </tr>
                 )
               })}
             </tbody>
           </table>
         </div>
       </div>
-
     </motion.div>
   )
 }
