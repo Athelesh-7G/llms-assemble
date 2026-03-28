@@ -109,14 +109,9 @@ export default function LandingPage({ onEnter }: LandingPageProps) {
         </p>
 
         {/* Subtitle */}
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.6, delay: 0.6 }}
-          className="text-[clamp(0.9rem,2.2vw,1.25rem)] text-white/75 max-w-[640px] leading-[1.6] mt-3 mb-2 text-center mx-auto"
-        >
+        <p className="text-center mx-auto whitespace-nowrap text-[clamp(0.7rem,1.6vw,1.1rem)] text-white/80 max-w-full tracking-[0.02em] mt-3">
           Benchmark · Compare · Rank · Calculate Costs · Find Your Model · Stay Informed
-        </motion.p>
+        </p>
 
         {/* Stats row */}
         <motion.div

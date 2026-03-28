@@ -101,7 +101,7 @@ export default function SplashScreen({ onComplete }: SplashScreenProps) {
         animate={{ opacity: 1 }}
         transition={{ delay: 2.2, duration: 0.6 }}
       >
-        LLM Evaluation Platform
+        Choose &amp; Play Yours
       </motion.p>
 
       {/* Phase 5: Progress bar */}

@@ -29,13 +29,19 @@ function computeMonthlyCostFor(
   avgInputTokens: number,
   avgOutputTokens: number,
 ): number {
+  const totalTokens = dailyRequests * (avgInputTokens + avgOutputTokens) * DAYS_PER_MONTH
   if (model.is_open_source) {
     const effectiveCost = model.effective_cost_per_1m > 0 ? model.effective_cost_per_1m : OSS_FALLBACK_COST
-    const totalTokens = dailyRequests * (avgInputTokens + avgOutputTokens) * DAYS_PER_MONTH
     return (totalTokens / 1_000_000) * effectiveCost
   }
-  const outputRate = model.cost_output_per_1m > 0 ? model.cost_output_per_1m : model.cost_input_per_1m * 3
-  const inputCost  = (dailyRequests * avgInputTokens  * DAYS_PER_MONTH / 1_000_000) * model.cost_input_per_1m
+  const safeInputCost  = isNaN(model.cost_input_per_1m)  || model.cost_input_per_1m  < 0 ? 0 : model.cost_input_per_1m
+  const safeOutputCost = isNaN(model.cost_output_per_1m) || model.cost_output_per_1m < 0 ? 0 : model.cost_output_per_1m
+  if (safeInputCost === 0 && safeOutputCost === 0) {
+    const effectiveCost = model.effective_cost_per_1m > 0 ? model.effective_cost_per_1m : OSS_FALLBACK_COST
+    return (totalTokens / 1_000_000) * effectiveCost
+  }
+  const outputRate = safeOutputCost > 0 ? safeOutputCost : safeInputCost * 3
+  const inputCost  = (dailyRequests * avgInputTokens  * DAYS_PER_MONTH / 1_000_000) * safeInputCost
   const outputCost = (dailyRequests * avgOutputTokens * DAYS_PER_MONTH / 1_000_000) * outputRate
   return inputCost + outputCost
 }
@@ -100,7 +106,7 @@ export default function CostPage() {
   const [showOSSOnly, setShowOSSOnly]         = useState(false)
   const [sortBy, setSortBy]                   = useState<'cost' | 'capability' | 'value'>('cost')
   const [highlightedModel, setHighlightedModel] = useState<string | null>(null)
-  const [budgetLimit, setBudgetLimit]         = useState(500)
+  const [budgetLimit, setBudgetLimit]         = useState(0)
 
   const totalMonthlyTokens = dailyRequests * (avgInputTokens + avgOutputTokens) * DAYS_PER_MONTH
 
@@ -113,8 +119,8 @@ export default function CostPage() {
           model: m,
           monthlyCost,
           withinBudget: budgetLimit === 0 || monthlyCost <= budgetLimit,
-          valueScore: monthlyCost > 0
-            ? (m.capability_score / monthlyCost) * 1000
+          valueScore: monthlyCost > 0.001
+            ? (m.capability_score * 1000) / monthlyCost
             : m.capability_score * 1000,
         }
       })
@@ -230,9 +236,9 @@ export default function CostPage() {
             max={10000}
             step={10}
             color="#E9C46A"
-            badge={`$${budgetLimit.toLocaleString()}`}
+            badge={budgetLimit === 0 ? 'No Limit' : `$${budgetLimit.toLocaleString()}`}
             presets={[
-              { label: '$10', value: 10 },
+              { label: 'No Limit', value: 0 },
               { label: '$50', value: 50 },
               { label: '$200', value: 200 },
               { label: '$500', value: 500 },

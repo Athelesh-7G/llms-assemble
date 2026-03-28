@@ -176,7 +176,7 @@ export default function HomePage() {
           Quantitative evaluation of {modelsData.length} production LLMs
         </p>
         <p className="text-sm text-faint mt-3 max-w-2xl">
-          Benchmark 40 production LLMs · Calculate your API costs · Find your perfect model · Explore 120 AI news stories from 2025
+          Benchmark · Compare · Calculate Costs · Find Your Model · 120 AI Stories
         </p>
       </section>
 
